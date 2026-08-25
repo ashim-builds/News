@@ -52,16 +52,12 @@ export default function AdminNav({ onMenuClick }) {
           )}
           
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-200 shrink-0">
+            <div className="h-10 sm:h-12 flex items-center justify-center shrink-0">
               <img
                 src="/logo.jpg"
                 alt="Smart Sanchar Logo"
-                className="w-full h-full object-cover"
+                className="h-full w-auto object-contain"
               />
-            </div>
-            <div className="hidden sm:flex items-center font-extrabold text-xl tracking-tight">
-              <span className="text-red-600">Smart</span>
-              <span className="text-gray-900 ml-1">Sanchar</span>
             </div>
           </Link>
         </div>

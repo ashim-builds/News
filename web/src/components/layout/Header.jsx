@@ -12,32 +12,13 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-3 shrink-0 group">
           {/* Logo mark */}
           <div className="relative shrink-0">
-            <div className="w-20 h-20">
+            <div className="h-20 sm:h-24 md:h-28 flex items-center justify-center">
               <img
                 src="/logo.jpg"
                 alt="Smart Sanchar Logo"
-                className="w-full h-full object-cover"
+                className="h-full w-auto object-contain"
               />
             </div>
-            {/* small book icon overlay */}
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white">
-              <BookOpen size={12} className="text-white" />
-            </div>
-          </div>
-
-          {/* Wordmark */}
-          <div className="flex flex-col">
-            <span
-              className="text-4xl font-black leading-none tracking-tight text-gray-900"
-              style={{
-                fontFamily: "'Mukta', 'Noto Sans Devanagari', sans-serif",
-              }}
-            >
-              Smart Sanchar
-            </span>
-            <span className="text-[10px] text-gray-500 tracking-widest font-medium mt-0.5 uppercase">
-              www.smartsanchar.com
-            </span>
           </div>
         </Link>
 

@@ -1,5 +1,3 @@
-import { connectDB } from "@/lib/db";
-import Article from "@/models/Article";
 import SamajClient from "./SamajClient";
 
 export const dynamic = "force-dynamic";
@@ -9,20 +7,22 @@ export const metadata = {
   description: "समाज, संस्कृति, स्वास्थ्य र स्थानीय गतिविधि सम्बन्धी समाचार।",
 };
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default async function SamajPage() {
   let newsList = [];
   try {
-    await connectDB();
-    const docs = await Article.find({
-      status: "Published",
-      category: new RegExp("हाम्रो समाजमा|समाज", "i"),
-    })
-      .sort({ createdAt: -1 })
-      .lean();
-
-    newsList = JSON.parse(JSON.stringify(docs));
+    const res = await fetch(`${API_BASE}/api/articles?status=Published&category=समाज`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.articles)) {
+        newsList = data.articles;
+      }
+    }
   } catch (err) {
-    console.error("[SAMAJ PAGE DB FETCH ERROR]", err);
+    console.warn("[SAMAJ PAGE API FETCH NOTICE]", err.message);
   }
 
   return <SamajClient newsList={newsList} />;

@@ -4,10 +4,10 @@
 
 import { Clock, Eye, PlayCircle } from "lucide-react";
 import Link from "next/link";
-import { connectDB } from "@/lib/db";
-import Article from "@/models/Article";
 
 export const dynamic = "force-dynamic";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 async function getYoutubeData(id, fallbackTitle) {
   let title = fallbackTitle;
   let views = "N/A";
@@ -19,45 +19,28 @@ async function getYoutubeData(id, fallbackTitle) {
       const oembedData = await oembedRes.json();
       title = oembedData.title;
     }
-
-    const htmlRes = await fetch(`https://www.youtube.com/watch?v=${id}`, { 
-      next: { revalidate: 3600 },
-      headers: { "Accept-Language": "en-US,en;q=0.9" }
-    });
-    if (htmlRes.ok) {
-      const html = await htmlRes.text();
-      const match = html.match(/var ytInitialData = (.*);<\/script>/);
-      if (match) {
-        const data = JSON.parse(match[1]);
-        const videoDetails = data.contents?.twoColumnWatchNextResults?.results?.results?.contents?.[0]?.videoPrimaryInfoRenderer;
-        
-        if (videoDetails?.viewCount?.videoViewCountRenderer?.viewCount?.simpleText) {
-          views = videoDetails.viewCount.videoViewCountRenderer.viewCount.simpleText;
-        } else if (videoDetails?.viewCount?.videoViewCountRenderer?.shortViewCount?.simpleText) {
-          views = videoDetails.viewCount.videoViewCountRenderer.shortViewCount.simpleText;
-        }
-        
-        if (videoDetails?.dateText?.simpleText) {
-          date = videoDetails.dateText.simpleText;
-        }
-      }
-    }
-  } catch (err) {
-    console.error("Error fetching YouTube data:", err);
-  }
+  } catch (err) {}
 
   return { title, views, date };
 }
 
 export default async function VideosPage() {
-  await connectDB();
-  const dbVideos = await Article.find({ category: "भिडियो ग्यालरी", status: "Published" }).sort({ createdAt: -1 });
-  const videoDocs = dbVideos.filter(v => v.videoId);
-
-  const videos = await Promise.all(videoDocs.map(async (doc) => {
-    const data = await getYoutubeData(doc.videoId, doc.title || "Video News");
-    return { id: doc.videoId, ...data };
-  }));
+  let videos = [];
+  try {
+    const res = await fetch(`${API_BASE}/api/articles?status=Published&category=भिडियो ग्यालरी`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.articles)) {
+        const videoDocs = data.articles.filter((v) => v.videoId);
+        videos = await Promise.all(videoDocs.map(async (doc) => {
+          const data = await getYoutubeData(doc.videoId, doc.title || "Video News");
+          return { id: doc.videoId, ...data };
+        }));
+      }
+    }
+  } catch (apiError) {
+    console.warn("Videos page API fetch error:", apiError.message);
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen">

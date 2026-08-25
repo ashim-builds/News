@@ -120,13 +120,13 @@ export default function AdminVideosPage() {
     setErrorMessage("");
     try {
       const res = await fetch(
-        `/api/youtube?id=${encodeURIComponent(videoInputUrl)}`
+        `/api/youtube?id=${encodeURIComponent(videoInputUrl.trim())}`
       );
       const data = await res.json();
-      if (data.success) {
-        setVideoPreview(data.data);
+      if (data.success && (data.data || data.videoId)) {
+        setVideoPreview(data.data || { id: data.videoId, videoId: data.videoId, title: data.title });
       } else {
-        setErrorMessage(data.message || "Failed to fetch video details.");
+        setErrorMessage(data.message || data.error || "Failed to fetch video details.");
       }
     } catch (err) {
       setErrorMessage("An error occurred while fetching video details.");
@@ -141,26 +141,27 @@ export default function AdminVideosPage() {
     setIsLoading(true);
     setErrorMessage("");
     try {
+      const vId = videoPreview.id || videoPreview.videoId;
       const res = await fetch("/api/articles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: videoPreview.title,
+          title: videoPreview.title || "Video News",
           category: "भिडियो ग्यालरी",
-          videoId: videoPreview.id,
+          videoId: vId,
           status: "Published",
         }),
       });
       const data = await res.json();
       if (data.success) {
-        setSuccessMessage("Video uploaded successfully!");
+        setSuccessMessage("Video saved successfully!");
         setIsVideoModalOpen(false);
         fetchArticlesFromDB();
       } else {
-        setErrorMessage(data.message || "Failed to upload video.");
+        setErrorMessage(data.message || data.error || "Failed to save video.");
       }
     } catch (err) {
-      setErrorMessage("An error occurred while uploading video.");
+      setErrorMessage("An error occurred while saving video.");
     } finally {
       setIsLoading(false);
     }

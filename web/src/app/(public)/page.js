@@ -1,12 +1,12 @@
 import ProvinceNews from "@/components/home/ProvinceNews";
 import { Clock, ChevronRight, PlayCircle, Eye } from "lucide-react";
 import Link from "next/link";
-import { connectDB } from "@/lib/db";
-import Article from "@/models/Article";
 import { getRelativeTimeNepali } from "@/lib/dateUtils";
 import AdBanner from "@/components/common/AdBanner";
 
 export const dynamic = "force-dynamic";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 async function getYoutubeData(id, fallbackTitle) {
   let title = fallbackTitle;
@@ -72,19 +72,24 @@ function shuffleArray(array) {
 }
 
 export default async function Home() {
-  await connectDB();
+  let articles = [];
+  let videoDocs = [];
 
-  // Fetch published articles from MongoDB (excluding Video Gallery)
-  const articlesDocs = await Article.find({
-    status: "Published",
-    category: { $ne: "भिडियो ग्यालरी" },
-  })
-    .sort({ createdAt: -1 })
-    .lean();
-
-  const rawArticles = JSON.parse(JSON.stringify(articlesDocs));
-  // Randomize articles on every refresh
-  const articles = shuffleArray(rawArticles);
+  try {
+    const res = await fetch(`${API_BASE}/api/articles?status=Published`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.articles)) {
+        const nonVideoArticles = data.articles.filter((a) => a.category !== "भिडियो ग्यालरी");
+        articles = shuffleArray(nonVideoArticles);
+        videoDocs = data.articles.filter((a) => a.category === "भिडियो ग्यालरी" && a.videoId);
+      }
+    }
+  } catch (apiError) {
+    console.warn("Backend API notice (Express backend starting or offline):", apiError.message);
+  }
 
   // Featured / Top Stories
   const featuredPost = articles[0] || null;
@@ -97,16 +102,6 @@ export default async function Home() {
     articles.length > 0
       ? shuffleArray(articles).slice(0, 6).map((a) => a.title).join(" • ")
       : "स्मार्टसञ्चारमा स्वागत छ! ताजा र निष्पक्ष समाचारका लागि हामीलाई पछ्याउनुहोस्।";
-
-  // Fetch Videos from MongoDB
-  const dbVideos = await Article.find({
-    category: "भिडियो ग्यालरी",
-    status: "Published",
-  })
-    .sort({ createdAt: -1 })
-    .limit(10);
-
-  const videoDocs = dbVideos.filter((v) => v.videoId);
 
   let mainVideo = null;
   let sideVideos = [];

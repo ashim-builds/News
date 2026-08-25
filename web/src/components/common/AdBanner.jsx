@@ -1,17 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import GoogleAd from "./GoogleAd";
 
-export default function AdBanner({ position = "header", className = "" }) {
+export default function AdBanner({ position = "header", adSlot, className = "" }) {
   const [ad, setAd] = useState(null);
 
   useEffect(() => {
+    // If an explicit Google AdSense slot is passed as a prop, don't fetch custom banner
+    if (adSlot) return;
+
     async function fetchAd() {
       try {
         const res = await fetch(`/api/ads?position=${position}&status=Active`);
         const data = await res.json();
         if (data.success && Array.isArray(data.ads) && data.ads.length > 0) {
-          // Select newest active ad for this position
           setAd(data.ads[0]);
         }
       } catch (err) {
@@ -20,7 +23,12 @@ export default function AdBanner({ position = "header", className = "" }) {
     }
 
     fetchAd();
-  }, [position]);
+  }, [position, adSlot]);
+
+  // If explicit Google AdSlot is provided, render GoogleAd component
+  if (adSlot) {
+    return <GoogleAd adSlot={adSlot} className={className} />;
+  }
 
   const handleClick = () => {
     if (ad && ad._id) {
@@ -33,7 +41,7 @@ export default function AdBanner({ position = "header", className = "" }) {
   };
 
   if (!ad) {
-    // Default placeholder state if no ad is active
+    // Default placeholder state if no custom ad is active
     if (position === "header") {
       return (
         <div className={`hidden md:flex bg-gray-100 items-center justify-center h-20 w-[450px] lg:w-[600px] text-gray-400 border border-gray-200 rounded-lg text-xs font-semibold ${className}`}>

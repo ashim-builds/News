@@ -1,6 +1,4 @@
 import { notFound } from "next/navigation";
-import { connectDB } from "@/lib/db";
-import Article from "@/models/Article";
 import ProvinceClient from "./ProvinceClient";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +13,8 @@ const PROVINCES = {
   sudurpashchim: "सुदूरपश्चिम",
 };
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default async function ProvincePage({ params }) {
   const resolvedParams = await params;
   const { slug } = resolvedParams;
@@ -27,20 +27,17 @@ export default async function ProvincePage({ params }) {
   
   let provinceNews = [];
   try {
-    await connectDB();
-    const query = {
-      status: "Published",
-      $or: [
-        { province: new RegExp(provinceName, "i") },
-        { category: new RegExp(provinceName, "i") },
-        { title: new RegExp(provinceName, "i") },
-      ],
-    };
-
-    const docs = await Article.find(query).sort({ createdAt: -1 }).lean();
-    provinceNews = JSON.parse(JSON.stringify(docs));
+    const res = await fetch(`${API_BASE}/api/articles?status=Published&province=${encodeURIComponent(provinceName)}`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.articles)) {
+        provinceNews = data.articles;
+      }
+    }
   } catch (err) {
-    console.error("[PROVINCE PAGE DB FETCH ERROR]", err);
+    console.warn("[PROVINCE PAGE API FETCH NOTICE]", err.message);
   }
 
   return <ProvinceClient provinceName={provinceName} provinceNews={provinceNews} />;

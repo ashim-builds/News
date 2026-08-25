@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Noto_Sans_Devanagari } from 'next/font/google'
+import { Noto_Sans_Devanagari } from 'next/font/google';
+import Script from "next/script";
 const noto = Noto_Sans_Devanagari({ subsets: ['devanagari'] })
 
 const geistSans = Geist({
@@ -22,12 +23,24 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const adSenseId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {adSenseId && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adSenseId}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
+        {children}
+      </body>
     </html>
   );
 }

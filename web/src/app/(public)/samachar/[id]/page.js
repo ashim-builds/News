@@ -1,5 +1,3 @@
-import { connectDB } from "@/lib/db";
-import Article from "@/models/Article";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -15,18 +13,21 @@ import {
 import { getRelativeTimeNepali } from "@/lib/dateUtils";
 
 export const dynamic = "force-dynamic";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const { id } = resolvedParams;
   try {
-    await connectDB();
-    const article = await Article.findById(id).lean();
-    if (article) {
-      return {
-        title: `${article.title} | स्मार्टसञ्चार`,
-        description: article.summary || article.content?.slice(0, 150),
-      };
+    const res = await fetch(`${API_BASE}/api/articles/${id}`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.article) {
+        return {
+          title: `${data.article.title} | स्मार्टसञ्चार`,
+          description: data.article.summary || data.article.content?.slice(0, 150),
+        };
+      }
     }
   } catch (err) {}
   return { title: "समाचार विवरण | स्मार्टसञ्चार" };
@@ -40,35 +41,27 @@ export default async function NewsDetailPage({ params }) {
   let suggestions = [];
 
   try {
-    await connectDB();
+    const res = await fetch(`${API_BASE}/api/articles/${id}`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.article) {
+        article = data.article;
+      }
+    }
 
-    // Increment view count and fetch full article
-    const doc = await Article.findByIdAndUpdate(
-      id,
-      { $inc: { views: 1 } },
-      { returnDocument: "after" }
-    ).lean();
-
-    if (!doc) {
+    if (!article) {
       return notFound();
     }
 
-    article = JSON.parse(JSON.stringify(doc));
-
-    // Fetch suggested latest published articles
-    const suggestionDocs = await Article.find({
-      _id: { $ne: id },
-      status: "Published",
-      category: { $ne: "भिडियो ग्यालरी" },
-    })
-      .sort({ createdAt: -1 })
-      .limit(6)
-      .lean();
-
-    suggestions = JSON.parse(JSON.stringify(suggestionDocs));
-  } catch (err) {
-    console.error("[NEWS DETAIL PAGE ERROR]", err);
-    return notFound();
+    const suggRes = await fetch(`${API_BASE}/api/articles?status=Published&limit=6`, { cache: "no-store" });
+    if (suggRes.ok) {
+      const suggData = await suggRes.json();
+      if (suggData.success && Array.isArray(suggData.articles)) {
+        suggestions = suggData.articles.filter((a) => a._id !== id).slice(0, 4);
+      }
+    }
+  } catch (apiError) {
+    console.warn("News detail API fetch error:", apiError.message);
   }
 
   return (
