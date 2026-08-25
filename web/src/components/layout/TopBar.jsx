@@ -50,6 +50,9 @@ export default function TopBar() {
     async function fetchTrending() {
       try {
         const res = await fetch("/api/articles?status=Published&limit=50");
+        if (!res.ok) return;
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) return;
         const data = await res.json();
         if (data.success && Array.isArray(data.articles) && data.articles.length > 0) {
           // Shuffle published articles to match randomized home data

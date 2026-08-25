@@ -38,6 +38,9 @@ export default function Footer() {
     async function loadPartners() {
       try {
         const res = await fetch("/api/partners");
+        if (!res.ok) return;
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) return;
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) {
           setPartners(data.data.filter((p) => p.status === "Active"));

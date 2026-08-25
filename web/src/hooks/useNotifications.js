@@ -30,6 +30,9 @@ export const useNotifications = () => {
     async function fetchLatestNews() {
       try {
         const res = await fetch("/api/articles?status=Published&limit=20");
+        if (!res.ok) return;
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) return;
         const data = await res.json();
         if (data.success && Array.isArray(data.articles)) {
           globalArticles = data.articles;

@@ -13,6 +13,9 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
     async function fetchAd() {
       try {
         const res = await fetch(`/api/ads?position=${position}&status=Active`);
+        if (!res.ok) return;
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) return;
         const data = await res.json();
         if (data.success && Array.isArray(data.ads) && data.ads.length > 0) {
           setAd(data.ads[0]);
