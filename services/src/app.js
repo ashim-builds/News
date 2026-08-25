@@ -15,6 +15,7 @@ import partnersRouter from "./routes/partners.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import uploadRouter from "./routes/upload.routes.js";
 import youtubeRouter from "./routes/youtube.routes.js";
+import healthRouter from "./routes/health.routes.js";
 
 const app = express();
 
@@ -49,6 +50,10 @@ app.get("/", (req, res) => {
     message: "SmartSanchar Express Backend Services API",
   });
 });
+
+// Health check endpoint (available at /health and /api/health)
+app.use("/health", healthRouter);
+app.use("/api/health", healthRouter);
 
 // API Routes
 app.use("/api/articles", articlesRouter);
