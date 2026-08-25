@@ -77,11 +77,9 @@ function AdminDashboardContent() {
   });
 
   // Settings Password Change State
-  const [passwordStep, setPasswordStep] = useState(1);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [otp, setOtp] = useState("");
   const [showPass, setShowPass] = useState(false);
 
   // Global UI State
@@ -232,7 +230,7 @@ function AdminDashboardContent() {
     }
   };
 
-  const handleRequestPasswordOtp = async (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
@@ -255,48 +253,12 @@ function AdminDashboardContent() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/admin/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: adminEmail }),
-      });
-
-      const data = await res.json();
-      setIsLoading(false);
-
-      if (data.success) {
-        setPasswordStep(2);
-        setSuccessMessage(
-          `Security OTP code dispatched via Nodemailer to ${adminEmail || "your email"}`
-        );
-      } else {
-        setErrorMessage(data.message || "Failed to send security OTP email.");
-      }
-    } catch (err) {
-      setIsLoading(false);
-      setErrorMessage("Error requesting security OTP.");
-    }
-  };
-
-  const handleConfirmPasswordChange = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    if (!otp || otp.trim().length !== 6) {
-      setErrorMessage("Please enter the 6-digit OTP code sent to your email.");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const res = await fetch("/api/admin/reset-password", {
+      const res = await fetch("/api/admin/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: adminEmail,
-          otp: otp.trim(),
+          currentPassword: currentPassword,
           newPassword: newPassword,
         }),
       });
@@ -305,10 +267,7 @@ function AdminDashboardContent() {
       setIsLoading(false);
 
       if (data.success) {
-        setSuccessMessage(
-          "Password updated successfully in MongoDB via 2FA Email verification!"
-        );
-        setPasswordStep(1);
+        setSuccessMessage("Password updated successfully!");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
@@ -552,7 +511,7 @@ function AdminDashboardContent() {
         </div>
       )}
 
-      {/* TAB 4: SETTINGS (CHANGE PASSWORD WITH 2FA OTP) */}
+      {/* TAB 4: SETTINGS (CHANGE PASSWORD) */}
       {activeTab === "settings" && (
         <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-xs p-6 sm:p-8">
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
@@ -564,156 +523,91 @@ function AdminDashboardContent() {
                 Admin Security Settings & Password Change
               </h2>
               <p className="text-xs text-gray-500 mt-0.5">
-                Protected by 2FA Nodemailer Email OTP Verification & MongoDB
-                Persistence
+                Update your admin credentials securely in MongoDB
               </p>
             </div>
           </div>
 
-          {/* STEP 1: PASSWORD FIELDS */}
-          {passwordStep === 1 && (
-            <form onSubmit={handleRequestPasswordOtp} className="space-y-5">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Current Password <span className="text-red-600">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                    <Key size={16} />
-                  </div>
-                  <input
-                    type={showPass ? "text" : "password"}
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Current password"
-                    className="w-full pl-10 pr-11 py-3 bg-white border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-all"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPass(!showPass)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
-                  >
-                    {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
+          <form onSubmit={handleChangePassword} className="space-y-5">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                Current Password <span className="text-red-600">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <Key size={16} />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  New Password <span className="text-red-600">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                    <KeyRound size={16} />
-                  </div>
-                  <input
-                    type={showPass ? "text" : "password"}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="New password (min 6 chars)"
-                    className="w-full pl-10 pr-11 py-3 bg-white border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-all"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Confirm New Password <span className="text-red-600">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                    <KeyRound size={16} />
-                  </div>
-                  <input
-                    type={showPass ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm new password"
-                    className="w-full pl-10 pr-11 py-3 bg-white border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-all"
-                    required
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3.5 px-4 bg-red-600 hover:bg-red-700 text-white font-bold text-base rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
-              >
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <>
-                    <Mail size={18} />
-                    <span>Send Security OTP to Email</span>
-                  </>
-                )}
-              </button>
-            </form>
-          )}
-
-          {/* STEP 2: 2FA EMAIL OTP VERIFICATION */}
-          {passwordStep === 2 && (
-            <form onSubmit={handleConfirmPasswordChange} className="space-y-6">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  6-Digit Security OTP Code <span className="text-red-600">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                    <Mail size={18} />
-                  </div>
-                  <input
-                    type="text"
-                    maxLength="6"
-                    value={otp}
-                    onChange={(e) =>
-                      setOtp(e.target.value.replace(/[^0-9]/g, ""))
-                    }
-                    placeholder="123456"
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-xl text-lg text-center font-mono tracking-[8px] font-bold text-gray-900 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-all"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-xs">
+                <input
+                  type={showPass ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Current password"
+                  className="w-full pl-10 pr-11 py-3 bg-white border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-all"
+                  required
+                />
                 <button
                   type="button"
-                  onClick={() => setPasswordStep(1)}
-                  className="font-semibold text-gray-600 hover:text-gray-900 cursor-pointer"
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRequestPasswordOtp}
-                  disabled={isLoading}
-                  className="inline-flex items-center gap-1.5 font-semibold text-red-600 hover:text-red-800 cursor-pointer"
-                >
-                  <RotateCcw size={13} />
-                  <span>Resend OTP Code</span>
+                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+            </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3.5 px-4 bg-red-600 hover:bg-red-700 text-white font-bold text-base rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
-              >
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <>
-                    <CheckCircle2 size={18} />
-                    <span>Verify OTP & Update Password</span>
-                  </>
-                )}
-              </button>
-            </form>
-          )}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                New Password <span className="text-red-600">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <KeyRound size={16} />
+                </div>
+                <input
+                  type={showPass ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="New password (min 6 chars)"
+                  className="w-full pl-10 pr-11 py-3 bg-white border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-all"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                Confirm New Password <span className="text-red-600">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <KeyRound size={16} />
+                </div>
+                <input
+                  type={showPass ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  className="w-full pl-10 pr-11 py-3 bg-white border border-gray-300 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-all"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 px-4 bg-red-600 hover:bg-red-700 text-white font-bold text-base rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <CheckCircle2 size={18} />
+                  <span>Update Password</span>
+                </>
+              )}
+            </button>
+          </form>
         </div>
       )}
 
