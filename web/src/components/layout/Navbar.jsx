@@ -18,7 +18,6 @@ import {
   Menu,
   X,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 
@@ -103,7 +102,7 @@ function NavbarContent() {
   }, []);
 
   useEffect(() => {
-    setSearchQuery(searchParams.get("q") || "");
+    setSearchQuery(searchParams?.get("q") || "");
   }, [searchParams]);
 
   const handleSearchSubmit = (e) => {
@@ -116,7 +115,7 @@ function NavbarContent() {
 
   const handleClearSearch = () => {
     setSearchQuery("");
-    if (searchParams.get("q")) {
+    if (searchParams?.get("q")) {
       router.push("/search");
     }
   };
@@ -281,7 +280,7 @@ function NavbarContent() {
               {unreadCount > 0 && (
                 <span className="w-2 h-2 bg-yellow-300 rounded-full animate-ping"></span>
               )}
-              <Sparkles size={14} className="text-yellow-300" />
+              <Bell size={14} className="text-yellow-300" />
               <span>ताजा अपडेट</span>
             </Link>
           </div>
@@ -393,7 +392,7 @@ function NavbarContent() {
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center justify-center gap-2 w-full py-2.5 bg-red-600 text-white font-bold text-xs rounded-2xl shadow-xs"
               >
-                <Sparkles size={15} className="text-yellow-300" />
+                <Bell size={15} className="text-yellow-300" />
                 <span>ताजा अपडेट</span>
               </Link>
               <Link
