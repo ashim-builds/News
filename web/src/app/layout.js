@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Noto_Sans_Devanagari } from 'next/font/google';
 import Script from "next/script";
+import SecurityProvider from "@/components/providers/SecurityProvider";
 const noto = Noto_Sans_Devanagari({ subsets: ['devanagari'] })
 
 const geistSans = Geist({
@@ -39,7 +40,9 @@ export default function RootLayout({ children }) {
             strategy="afterInteractive"
           />
         )}
-        {children}
+        <SecurityProvider>
+          {children}
+        </SecurityProvider>
       </body>
     </html>
   );

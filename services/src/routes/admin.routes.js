@@ -15,8 +15,8 @@ const loginHandler = async (req, res) => {
     let admin = await Admin.findOne({ email: email.toLowerCase() });
 
     // Seed default admin if non-existent
-    if (!admin) {
-      const defaultPassword = process.env.DEFAULT_ADMIN_PASSWORD || "admin123456";
+    if (!admin && email.toLowerCase() === "admin@smartsanchar.com") {
+      const defaultPassword = process.env.DEFAULT_ADMIN_PASSWORD || "Smartsanchar@001!";
       const hashedPassword = await bcrypt.hash(defaultPassword, 10);
       admin = await Admin.create({
         email: email.toLowerCase(),

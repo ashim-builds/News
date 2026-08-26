@@ -10,6 +10,7 @@ import {
   Users,
   Settings,
   LogOut,
+  BookOpen
 } from "lucide-react";
 
 const SIDEBAR_NAV = [
@@ -18,6 +19,7 @@ const SIDEBAR_NAV = [
   { id: "videos", label: "भिडियो ग्यालरी (Videos)", href: "/admin/dashboard/videos", icon: Video },
   { id: "ads", label: "विज्ञापन व्यवस्थापन (Ads)", href: "/admin/dashboard/ads", icon: Megaphone },
   { id: "partners", label: "साझेदार तथा टिम (Partners)", href: "/admin/dashboard/partners", icon: Users },
+  { id: "userguide", label: "प्रयोगकर्ता गाइड (User Guide)", href: "/admin/dashboard/userguide", icon: BookOpen },
 ];
 
 export default function AdminSidebar({ activeTab, onTabChange }) {

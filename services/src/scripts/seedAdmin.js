@@ -9,8 +9,8 @@ async function seedAdmin() {
     console.log("Connecting to MongoDB:", uri);
     await mongoose.connect(uri);
 
-    const email = "ashim.2009.adk@gmail.com";
-    const rawPassword = "Smartsanchar123";
+    const email = "admin@smartsanchar.com";
+    const rawPassword = "Smartsanchar@001!";
 
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
 
