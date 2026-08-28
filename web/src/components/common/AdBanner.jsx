@@ -44,6 +44,14 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
   };
 
   if (!ad) {
+    // If Google AdSense is configured globally, render the fallback AdSense unit
+    const fallbackAdSlot = process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT;
+    const adSenseId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
+
+    if (adSenseId && fallbackAdSlot) {
+      return <GoogleAd adSlot={fallbackAdSlot} className={className} />;
+    }
+
     // Default placeholder state if no custom ad is active
     if (position === "header") {
       return (
