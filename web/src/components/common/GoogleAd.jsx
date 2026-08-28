@@ -53,7 +53,7 @@ export default function GoogleAd({
       <ins
         ref={adRef}
         className="adsbygoogle"
-        style={{ display: "block", width: "100%" }}
+        style={{ display: "block", width: "100%", height: "100%" }}
         data-ad-client={adClient}
         data-ad-slot={adSlot}
         data-ad-format={adFormat}

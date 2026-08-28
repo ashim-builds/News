@@ -30,7 +30,16 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
 
   // If explicit Google AdSlot is provided, render GoogleAd component
   if (adSlot) {
-    return <GoogleAd adSlot={adSlot} className={className} />;
+    if (position === "header") {
+      return (
+        <GoogleAd
+          adSlot={adSlot}
+          adFormat="horizontal"
+          className={`hidden md:block w-full max-w-[728px] h-[90px] ml-auto ${className}`}
+        />
+      );
+    }
+    return <GoogleAd adSlot={adSlot} className={`w-full h-[250px] ${className}`} />;
   }
 
   const handleClick = () => {
@@ -49,7 +58,17 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
     const adSenseId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
 
     if (adSenseId && fallbackAdSlot) {
-      return <GoogleAd adSlot={fallbackAdSlot} className={className} />;
+      if (position === "header") {
+        // Limit the header ad to horizontal format and max 90px height, hidden on mobile
+        return (
+          <GoogleAd
+            adSlot={fallbackAdSlot}
+            adFormat="horizontal"
+            className={`hidden md:block w-full max-w-[728px] h-[90px] ml-auto ${className}`}
+          />
+        );
+      }
+      return <GoogleAd adSlot={fallbackAdSlot} className={`w-full h-[250px] ${className}`} />;
     }
 
     // Default placeholder state if no custom ad is active
