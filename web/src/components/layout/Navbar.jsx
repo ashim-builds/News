@@ -290,7 +290,7 @@ function NavbarContent() {
       {/* Mobile Drawer Slide-out */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex animate-in fade-in duration-200">
-          <div className="bg-white w-4/5 max-w-xs h-full shadow-2xl p-5 flex flex-col justify-between overflow-y-auto rounded-r-3xl">
+          <div className="bg-white w-4/5 max-w-xs shrink-0 h-full shadow-2xl p-5 flex flex-col justify-between overflow-y-auto rounded-r-3xl">
             <div>
               {/* Header inside drawer */}
               <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
