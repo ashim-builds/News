@@ -132,7 +132,8 @@ function NavbarContent() {
   };
 
   return (
-    <nav className="w-full bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-40 shadow-xs">
+    <>
+      <nav className="w-full bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-40 shadow-xs">
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-14">
           
@@ -286,6 +287,7 @@ function NavbarContent() {
           </div>
         </div>
       </div>
+    </nav>
 
       {/* Mobile Drawer Slide-out */}
       {mobileOpen && (
@@ -444,7 +446,7 @@ function NavbarContent() {
           </div>
         </div>
       )}
-    </nav>
+    </>
   );
 }
 
