@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 
 import { errorHandler } from "./middlewares/error.middleware.js";
-import { securityMiddleware } from "./middlewares/security.middleware.js";
+
 
 import articlesRouter from "./routes/articles.routes.js";
 import adsRouter from "./routes/ads.routes.js";
@@ -38,11 +38,10 @@ app.use(compression());
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 300,
+    max: 1000, // Increased threshold to support dynamic news portal requests
   }),
 );
 
-securityMiddleware(app);
 
 app.get("/", (req, res) => {
   res.json({
