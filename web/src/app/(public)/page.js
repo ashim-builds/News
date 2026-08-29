@@ -349,7 +349,7 @@ export default async function Home() {
               <div className="lg:col-span-7 flex flex-col">
                 <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg border border-gray-800 bg-black">
                   <iframe
-                    src={`https://www.youtube.com/embed/${mainVideo.id}`}
+                    src={`https://www.youtube.com/embed/${mainVideo.id}?autoplay=0&modestbranding=1&rel=0&iv_load_policy=3`}
                     title={mainVideo.title}
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

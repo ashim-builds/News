@@ -13,17 +13,17 @@ async function getYoutubeData(id, fallbackTitle) {
   let views = "N/A";
   let date = "N/A";
   let summary = "";
+  let imageUrl = "";
 
   try {
-    const res = await fetch(`${API_BASE}/api/articles?status=Published&category=भिडियो ग्यालरी`, { cache: "no-store" });
+    const res = await fetch(`${API_BASE}/api/articles?status=Published&category=भिडियो ग्यालरी&videoId=${id}`, { cache: "no-store" });
     if (res.ok) {
       const data = await res.json();
-      if (data.success && Array.isArray(data.articles)) {
-        const dbDoc = data.articles.find((a) => a.videoId === id);
-        if (dbDoc) {
-          if (dbDoc.title) title = dbDoc.title;
-          if (dbDoc.summary) summary = dbDoc.summary;
-        }
+      if (data.success && Array.isArray(data.articles) && data.articles.length > 0) {
+        const dbDoc = data.articles[0];
+        if (dbDoc.title) title = dbDoc.title;
+        if (dbDoc.summary) summary = dbDoc.summary;
+        if (dbDoc.imageUrl) imageUrl = dbDoc.imageUrl;
       }
     }
   } catch (e) {}
@@ -38,7 +38,7 @@ async function getYoutubeData(id, fallbackTitle) {
     }
   } catch (err) {}
 
-  return { title, views, date, summary };
+  return { title, views, date, summary, imageUrl };
 }
 
 export async function generateMetadata({ params }) {
@@ -49,7 +49,24 @@ export async function generateMetadata({ params }) {
   const description = video.summary || "स्मार्ट सञ्चार भिडियो ग्यालरी - ताजा, निष्पक्ष र भरपर्दो भिडियो समाचार।";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.smartsanchar.com";
   const pageUrl = `${siteUrl}/videos/${id}`;
-  const videoThumbnail = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  
+  let ogImages = [];
+  if (video.imageUrl) {
+    ogImages.push({
+      url: video.imageUrl,
+      width: 1200,
+      height: 630,
+      alt: title,
+    });
+  }
+  
+  // Use guaranteed hqdefault as a fallback or primary to avoid 404s
+  ogImages.push({
+    url: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+    width: 480,
+    height: 360,
+    alt: title,
+  });
 
   return {
     title,
@@ -59,22 +76,15 @@ export async function generateMetadata({ params }) {
       description,
       url: pageUrl,
       siteName: "स्मार्टसञ्चार",
-      images: [
-        {
-          url: videoThumbnail,
-          width: 480,
-          height: 360,
-          alt: video.title || "भिडियो थम्बनेल",
-        },
-      ],
+      images: ogImages,
       locale: "ne_NP",
-      type: "video.other",
+      type: "website",
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [videoThumbnail],
+      images: ogImages.map(img => img.url),
     },
   };
 }
@@ -110,7 +120,7 @@ export default async function VideoDetailPage({ params }) {
             <div className="relative aspect-video bg-black rounded-xl overflow-hidden shadow-md">
               <iframe
                 className="w-full h-full"
-                src={`https://www.youtube.com/embed/${id}?autoplay=1`}
+                src={`https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3`}
                 title={video.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

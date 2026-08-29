@@ -6,12 +6,13 @@ const router = express.Router();
 // GET all published articles with optional category/province filter
 router.get("/", async (req, res) => {
   try {
-    const { category, province, status, isFeatured, limit } = req.query;
+    const { category, province, status, isFeatured, videoId, limit } = req.query;
     const filter = {};
 
     if (status) filter.status = status;
     if (category) filter.category = category;
     if (province) filter.province = province;
+    if (videoId) filter.videoId = videoId;
     if (isFeatured !== undefined) filter.isFeatured = isFeatured === "true";
 
     let query = Article.find(filter).sort({ createdAt: -1 });
