@@ -41,6 +41,44 @@ async function getYoutubeData(id, fallbackTitle) {
   return { title, views, date, summary };
 }
 
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
+  const video = await getYoutubeData(id, "भिडियो समाचार");
+  const title = `${video.title} | स्मार्टसञ्चार`;
+  const description = video.summary || "स्मार्ट सञ्चार भिडियो ग्यालरी - ताजा, निष्पक्ष र भरपर्दो भिडियो समाचार।";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.smartsanchar.com";
+  const pageUrl = `${siteUrl}/videos/${id}`;
+  const videoThumbnail = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      siteName: "स्मार्टसञ्चार",
+      images: [
+        {
+          url: videoThumbnail,
+          width: 480,
+          height: 360,
+          alt: video.title || "भिडियो थम्बनेल",
+        },
+      ],
+      locale: "ne_NP",
+      type: "video.other",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [videoThumbnail],
+    },
+  };
+}
+
 export default async function VideoDetailPage({ params }) {
   const { id } = await params;
   const video = await getYoutubeData(id, "Video News");
