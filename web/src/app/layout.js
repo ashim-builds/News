@@ -21,6 +21,28 @@ export const metadata = {
   icons: {
     icon: "/logo.jpg",
   },
+  openGraph: {
+    title: "स्मार्ट सञ्चार - नेपालको भरपर्दो अनलाइन समाचार पोर्टल | Smart Sanchar",
+    description: "स्मार्ट सञ्चार - ताजा, निष्पक्ष र भरपर्दो समाचार। राजनीति, अर्थतन्त्र, खेलकुद, प्रविधि र अन्तर्राष्ट्रिय समाचार।",
+    url: "https://www.smartsanchar.com",
+    siteName: "स्मार्ट सञ्चार",
+    images: [
+      {
+        url: "https://www.smartsanchar.com/logo.jpg",
+        width: 1200,
+        height: 630,
+        alt: "स्मार्ट सञ्चार",
+      },
+    ],
+    locale: "ne_NP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "स्मार्ट सञ्चार - नेपालको भरपर्दो अनलाइन समाचार पोर्टल | Smart Sanchar",
+    description: "स्मार्ट सञ्चार - ताजा, निष्पक्ष र भरपर्दो समाचार। राजनीति, अर्थतन्त्र, खेलकुद, प्रविधि र अन्तर्राष्ट्रिय समाचार।",
+    images: ["https://www.smartsanchar.com/logo.jpg"],
+  },
 };
 
 export default function RootLayout({ children }) {

@@ -17,6 +17,9 @@ import {
   Clock,
   Eye,
   Search,
+  Share2,
+  Copy,
+  Check,
 } from "lucide-react";
 import ImageDropzone from "@/components/common/ImageDropzone";
 
@@ -61,6 +64,10 @@ export default function AdminVideosPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  // Share Modal State
+  const [sharingArticle, setSharingArticle] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   // Fetch dynamic articles & enrich videos with live YouTube data
   const fetchArticlesFromDB = async () => {
@@ -415,6 +422,13 @@ export default function AdminVideosPage() {
                     <td className="py-3.5 px-4 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-2">
                         <button
+                          onClick={() => setSharingArticle(article)}
+                          className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
+                          title="Share Video"
+                        >
+                          <Share2 size={16} />
+                        </button>
+                        <button
                           onClick={() => handleOpenEditModal(article)}
                           className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                           title="Edit Video"
@@ -683,6 +697,130 @@ export default function AdminVideosPage() {
           </div>
         </div>
       )}
+
+      {/* SHARE MODAL */}
+      {sharingArticle && (() => {
+        const shareUrl = typeof window !== "undefined"
+          ? `${window.location.origin}/videos/${sharingArticle._id}`
+          : "";
+
+        const handleCopyLink = () => {
+          navigator.clipboard.writeText(shareUrl);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        };
+
+        const handleNativeShare = async () => {
+          if (navigator.share) {
+            try {
+              await navigator.share({
+                title: sharingArticle.title,
+                text: sharingArticle.summary || "",
+                url: shareUrl,
+              });
+            } catch (err) {
+              console.log("Error native share", err);
+            }
+          }
+        };
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+            <div className="bg-white rounded-2xl border border-gray-200 max-w-md w-full p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 relative">
+              <button
+                onClick={() => setSharingArticle(null)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                  <Share2 size={22} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">भिडियो साझा गर्नुहोस्</h3>
+                  <p className="text-xs text-gray-500">Share video to social platforms</p>
+                </div>
+              </div>
+
+              <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs font-bold text-gray-800 line-clamp-2 mb-4 leading-relaxed">
+                {sharingArticle.title}
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 transition-all font-bold text-xs gap-1.5 cursor-pointer text-gray-700"
+                >
+                  <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </svg>
+                  <span>Facebook</span>
+                </a>
+
+                <a
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(sharingArticle.title + " " + shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 hover:bg-green-50 hover:border-green-200 hover:text-green-600 transition-all font-bold text-xs gap-1.5 cursor-pointer text-gray-700"
+                >
+                  <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.197 1.451 4.836 1.452 5.438 0 9.862-4.425 9.866-9.864.002-2.634-1.02-5.11-2.88-6.973C16.55 1.904 14.072.88 11.442.879 6.002.879 1.579 5.305 1.575 10.744c-.001 1.706.449 3.373 1.304 4.837L1.892 21.05l5.755-1.51l-.99.584z" />
+                  </svg>
+                  <span>WhatsApp</span>
+                </a>
+
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(sharingArticle.title)}&url=${encodeURIComponent(shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:text-black transition-all font-bold text-xs gap-1.5 cursor-pointer text-gray-700"
+                >
+                  <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                  <span>Twitter / X</span>
+                </a>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={shareUrl}
+                  className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-mono select-all text-gray-600 focus:outline-none"
+                />
+                <button
+                  onClick={handleCopyLink}
+                  type="button"
+                  className={`px-4 py-2 text-xs font-bold rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+                    copied
+                      ? "bg-green-50 text-green-700 border-green-200"
+                      : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                  }`}
+                >
+                  {copied ? <Check size={14} /> : <Copy size={14} />}
+                  <span>{copied ? "Copied" : "Copy"}</span>
+                </button>
+              </div>
+
+              {typeof navigator !== "undefined" && navigator.share && (
+                <button
+                  onClick={handleNativeShare}
+                  type="button"
+                  className="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Share2 size={14} />
+                  <span>Other Sharing Options</span>
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

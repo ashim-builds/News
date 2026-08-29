@@ -23,13 +23,63 @@ export async function generateMetadata({ params }) {
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.article) {
+        const title = `${data.article.title} | स्मार्टसञ्चार`;
+        const description = data.article.summary || data.article.content?.slice(0, 150) || "";
+        const imageUrl = data.article.imageUrl;
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.smartsanchar.com";
+        const pageUrl = `${siteUrl}/samachar/${id}`;
+
+        let ogImages = [];
+        if (imageUrl) {
+          if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+            ogImages.push({
+              url: imageUrl,
+              width: 1200,
+              height: 630,
+              alt: data.article.title || "समाचार इमेज",
+            });
+          } else {
+            const cleanImage = imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`;
+            ogImages.push({
+              url: `${siteUrl}${cleanImage}`,
+              width: 1200,
+              height: 630,
+              alt: data.article.title || "समाचार इमेज",
+            });
+          }
+        } else {
+          ogImages.push({
+            url: `${siteUrl}/logo.jpg`,
+            width: 1200,
+            height: 630,
+            alt: "स्मार्टसञ्चार",
+          });
+        }
+
         return {
-          title: `${data.article.title} | स्मार्टसञ्चार`,
-          description: data.article.summary || data.article.content?.slice(0, 150),
+          title,
+          description,
+          openGraph: {
+            title,
+            description,
+            url: pageUrl,
+            siteName: "स्मार्टसञ्चार",
+            images: ogImages,
+            locale: "ne_NP",
+            type: "article",
+          },
+          twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+            images: ogImages.map((img) => img.url),
+          },
         };
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    console.error("Error generating metadata for article:", err);
+  }
   return { title: "समाचार विवरण | स्मार्टसञ्चार" };
 }
 
