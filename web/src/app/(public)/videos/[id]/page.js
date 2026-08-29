@@ -14,22 +14,46 @@ async function getYoutubeData(id, fallbackTitle) {
   let date = "N/A";
   let summary = "";
   let imageUrl = "";
+  let youtubeId = id;
 
-  try {
-    const res = await fetch(`${API_BASE}/api/articles?status=Published&category=भिडियो ग्यालरी&videoId=${id}`, { cache: "no-store" });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && Array.isArray(data.articles) && data.articles.length > 0) {
-        const dbDoc = data.articles[0];
-        if (dbDoc.title) title = dbDoc.title;
-        if (dbDoc.summary) summary = dbDoc.summary;
-        if (dbDoc.imageUrl) imageUrl = dbDoc.imageUrl;
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(id);
+
+  if (isObjectId) {
+    try {
+      const res = await fetch(`${API_BASE}/api/articles/${id}`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.article) {
+          const dbDoc = data.article;
+          if (dbDoc.title) title = dbDoc.title;
+          if (dbDoc.summary) summary = dbDoc.summary;
+          if (dbDoc.imageUrl) imageUrl = dbDoc.imageUrl;
+          if (dbDoc.videoId) youtubeId = dbDoc.videoId;
+        }
       }
+    } catch (e) {
+      console.error("Error fetching article by ObjectId:", e);
     }
-  } catch (e) {}
+  } else {
+    try {
+      const res = await fetch(`${API_BASE}/api/articles?status=Published&category=भिडियो ग्यालरी&videoId=${id}`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.articles) && data.articles.length > 0) {
+          const dbDoc = data.articles[0];
+          if (dbDoc.title) title = dbDoc.title;
+          if (dbDoc.summary) summary = dbDoc.summary;
+          if (dbDoc.imageUrl) imageUrl = dbDoc.imageUrl;
+          if (dbDoc.videoId) youtubeId = dbDoc.videoId;
+        }
+      }
+    } catch (e) {
+      console.error("Error fetching article by videoId:", e);
+    }
+  }
 
   try {
-    const oembedRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`, { next: { revalidate: 3600 } });
+    const oembedRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${youtubeId}&format=json`, { next: { revalidate: 3600 } });
     if (oembedRes.ok) {
       const oembedData = await oembedRes.json();
       if (!title || title === fallbackTitle) {
@@ -38,7 +62,7 @@ async function getYoutubeData(id, fallbackTitle) {
     }
   } catch (err) {}
 
-  return { title, views, date, summary, imageUrl };
+  return { title, views, date, summary, imageUrl, youtubeId };
 }
 
 export async function generateMetadata({ params }) {
@@ -62,7 +86,7 @@ export async function generateMetadata({ params }) {
   
   // Use guaranteed hqdefault as a fallback or primary to avoid 404s
   ogImages.push({
-    url: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+    url: `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`,
     width: 480,
     height: 360,
     alt: title,
@@ -92,6 +116,7 @@ export async function generateMetadata({ params }) {
 export default async function VideoDetailPage({ params }) {
   const { id } = await params;
   const video = await getYoutubeData(id, "Video News");
+  const youtubeId = video.youtubeId || id;
 
   let otherVideos = [];
   try {
@@ -99,7 +124,7 @@ export default async function VideoDetailPage({ params }) {
     if (res.ok) {
       const data = await res.json();
       if (data.success && Array.isArray(data.articles)) {
-        const dbVideos = data.articles.filter((a) => a.videoId && a.videoId !== id);
+        const dbVideos = data.articles.filter((a) => a.videoId && a.videoId !== youtubeId);
         otherVideos = await Promise.all(
           dbVideos.slice(0, 6).map(async (doc) => {
             const vData = await getYoutubeData(doc.videoId, doc.title || "Video News");
@@ -120,7 +145,7 @@ export default async function VideoDetailPage({ params }) {
             <div className="relative aspect-video bg-black rounded-xl overflow-hidden shadow-md">
               <iframe
                 className="w-full h-full"
-                src={`https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3`}
+                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3`}
                 title={video.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
