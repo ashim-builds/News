@@ -4,8 +4,10 @@ import { useEffect } from "react";
 
 export default function SecurityProvider({ children }) {
   useEffect(() => {
-    // Disable right click
+    // Disable right click (except on mobile devices to allow long-press paste/copy)
     const handleContextMenu = (e) => {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) return;
       e.preventDefault();
     };
 

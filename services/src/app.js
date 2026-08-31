@@ -5,6 +5,8 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import compression from "compression";
+import connectDB from "./config/db.js";
+
 
 import { errorHandler } from "./middlewares/error.middleware.js";
 
@@ -23,9 +25,20 @@ app.disable("x-powered-by");
 
 app.use(helmet());
 
+const allowedOrigins = ["http://localhost:3000", "http://127.0.0.1:3000"];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
@@ -34,6 +47,17 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(compression());
+
+// Ensure database connection is established
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (error) {
+    console.error("Database connection failed on request:", error.message);
+  }
+  next();
+});
+
 
 app.use(
   rateLimit({
