@@ -360,9 +360,9 @@ export default async function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              {/* Main Featured Video (Left 7 cols) */}
-              <div className="lg:col-span-7 flex flex-col">
+            <div className={`grid grid-cols-1 ${sideVideos.length > 0 ? "lg:grid-cols-12" : ""} gap-6`}>
+              {/* Main Featured Video (Left 7 cols if side videos exist, otherwise centered full-width) */}
+              <div className={sideVideos.length > 0 ? "lg:col-span-7 flex flex-col" : "max-w-4xl mx-auto w-full flex flex-col"}>
                 <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg border border-gray-800 bg-black">
                   <iframe
                     src={`https://www.youtube.com/embed/${mainVideo.id}?autoplay=0&modestbranding=1&rel=0&iv_load_policy=3`}
@@ -386,38 +386,41 @@ export default async function Home() {
                 </div>
               </div>
 
-              {/* Side Videos Grid (Right 5 cols) */}
-              <div className="lg:col-span-5 flex flex-col gap-3">
-                {sideVideos.map((video) => (
-                  <Link
-                    key={video.id}
-                    href={`/videos/${video.id}`}
-                    className="flex gap-3 bg-gray-800/80 hover:bg-gray-800 p-2.5 rounded-xl border border-gray-700/60 hover:border-red-500/50 transition-all group"
-                  >
-                    <div className="w-28 h-18 rounded-lg overflow-hidden shrink-0 bg-black relative border border-gray-700">
-                      <img
-                        src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`}
-                        alt={video.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                        <PlayCircle className="w-6 h-6 text-white opacity-80 group-hover:opacity-100" />
+              {/* Side Videos Grid (Right 5 cols) - ONLY render if sideVideos exist */}
+              {sideVideos.length > 0 && (
+                <div className="lg:col-span-5 flex flex-col gap-3">
+                  {sideVideos.map((video) => (
+                    <Link
+                      key={video.id}
+                      href={`/videos/${video.id}`}
+                      className="flex gap-3 bg-gray-800/80 hover:bg-gray-800 p-2.5 rounded-xl border border-gray-700/60 hover:border-red-500/50 transition-all group"
+                    >
+                      <div className="w-28 h-18 rounded-lg overflow-hidden shrink-0 bg-black relative border border-gray-700">
+                        <img
+                          src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`}
+                          alt={video.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                          <PlayCircle className="w-6 h-6 text-white opacity-80 group-hover:opacity-100" />
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                      <h4 className="text-xs sm:text-sm font-bold text-gray-200 group-hover:text-white line-clamp-2 leading-snug">
-                        {video.title}
-                      </h4>
-                      <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-1">
-                        <span>{video.date}</span>
-                        <span>•</span>
-                        <span className="text-red-400">{video.views}</span>
+                      <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                        <h4 className="text-xs sm:text-sm font-bold text-gray-200 group-hover:text-white line-clamp-2 leading-snug">
+                          {video.title}
+                        </h4>
+                        <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-1">
+                          <span>{video.date}</span>
+                          <span>•</span>
+                          <span className="text-red-400">{video.views}</span>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
+
           </section>
         )}
       </main>
