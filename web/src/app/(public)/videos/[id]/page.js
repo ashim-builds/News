@@ -29,6 +29,8 @@ async function getYoutubeData(id, fallbackTitle) {
           if (dbDoc.summary) summary = dbDoc.summary;
           if (dbDoc.imageUrl) imageUrl = dbDoc.imageUrl;
           if (dbDoc.videoId) youtubeId = dbDoc.videoId;
+          if (dbDoc.createdAt) date = new Date(dbDoc.createdAt).toLocaleDateString("ne-NP");
+          if (dbDoc.views !== undefined) views = `${dbDoc.views.toLocaleString()} हेराई`;
         }
       }
     } catch (e) {
@@ -45,6 +47,8 @@ async function getYoutubeData(id, fallbackTitle) {
           if (dbDoc.summary) summary = dbDoc.summary;
           if (dbDoc.imageUrl) imageUrl = dbDoc.imageUrl;
           if (dbDoc.videoId) youtubeId = dbDoc.videoId;
+          if (dbDoc.createdAt) date = new Date(dbDoc.createdAt).toLocaleDateString("ne-NP");
+          if (dbDoc.views !== undefined) views = `${dbDoc.views.toLocaleString()} हेराई`;
         }
       }
     } catch (e) {
@@ -128,7 +132,12 @@ export default async function VideoDetailPage({ params }) {
         otherVideos = await Promise.all(
           dbVideos.slice(0, 6).map(async (doc) => {
             const vData = await getYoutubeData(doc.videoId, doc.title || "Video News");
-            return { id: doc.videoId, ...vData };
+            return { 
+              id: doc.videoId, 
+              title: vData.title,
+              views: `${(doc.views || 0).toLocaleString()} हेराई`,
+              date: doc.createdAt ? new Date(doc.createdAt).toLocaleDateString("ne-NP") : "N/A"
+            };
           })
         );
       }
