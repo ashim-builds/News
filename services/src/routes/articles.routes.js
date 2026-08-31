@@ -11,7 +11,11 @@ router.get("/", async (req, res) => {
 
     if (status) filter.status = status;
     if (category) filter.category = category;
-    if (province) filter.province = province;
+    if (province) {
+      const cleanProvince = province.replace(/\s*प्रदेश\s*$/, "").trim();
+      filter.province = { $regex: new RegExp(`^${cleanProvince}(\\s*प्रदेश)?$`, "i") };
+    }
+
     if (videoId) filter.videoId = videoId;
     if (isFeatured !== undefined) filter.isFeatured = isFeatured === "true";
 
