@@ -10,8 +10,8 @@ function parseYoutubeId(input) {
 
 async function getYoutubeStats(videoId) {
   let title = "भिडियो समाचार (Video News)";
-  let views = "1.5K+ हेराई";
-  let date = "हालै";
+  let views = "";
+  let date = "";
 
   // 1. Fetch title via YouTube oEmbed API
   try {

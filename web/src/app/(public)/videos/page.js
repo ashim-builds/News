@@ -34,7 +34,12 @@ export default async function VideosPage() {
         const videoDocs = data.articles.filter((v) => v.videoId);
         videos = await Promise.all(videoDocs.map(async (doc) => {
           const data = await getYoutubeData(doc.videoId, doc.title || "Video News");
-          return { id: doc.videoId, ...data };
+          return { 
+            id: doc.videoId, 
+            title: data.title,
+            views: `${(doc.views || 0).toLocaleString()} हेराई`,
+            date: doc.createdAt ? new Date(doc.createdAt).toLocaleDateString("ne-NP") : "N/A"
+          };
         }));
       }
     }
