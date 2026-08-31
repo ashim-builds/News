@@ -1,4 +1,4 @@
-import { Clock, Play } from "lucide-react";
+import { Clock, PlayCircle } from "lucide-react";
 import Link from "next/link";
 
 async function getYoutubeData(id) {
@@ -166,9 +166,7 @@ export default async function SearchPage({ searchParams }) {
                           alt={video.title}
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
-                          <div className="w-14 h-14 bg-black/50 rounded-full flex items-center justify-center border-2 border-white/80 group-hover:scale-110 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-300 shadow-md">
-                            <Play size={20} className="text-white fill-white translate-x-0.5" />
-                          </div>
+                          <PlayCircle className="w-16 h-16 text-white/80 group-hover:text-white group-hover:scale-110 transition-all drop-shadow-md" />
                         </div>
                       </Link>
                       <Link

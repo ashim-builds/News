@@ -2,7 +2,7 @@
 
 
 
-import { Clock, Eye, Play } from "lucide-react";
+import { Clock, Eye, PlayCircle } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -69,8 +69,8 @@ export default async function VideosPage() {
                   alt={video.title}
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-14 h-14 bg-black/50 rounded-full flex items-center justify-center border-2 border-white/80 group-hover:scale-110 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-300 shadow-md">
-                    <Play size={20} className="text-white fill-white translate-x-0.5" />
+                  <div className="w-12 h-12 bg-black/60 rounded-full flex items-center justify-center group-hover:bg-red-600 transition-colors">
+                    <PlayCircle className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </Link>

@@ -1,5 +1,5 @@
 import ProvinceNews from "@/components/home/ProvinceNews";
-import { Clock, ChevronRight, Play, PlayCircle, Eye } from "lucide-react";
+import { Clock, ChevronRight, PlayCircle, Eye } from "lucide-react";
 import Link from "next/link";
 import { getRelativeTimeNepali } from "@/lib/dateUtils";
 import AdBanner from "@/components/common/AdBanner";
@@ -113,15 +113,10 @@ export default async function Home() {
 
   if (videoDocs.length > 0) {
     const shuffledVideos = shuffleArray(videoDocs);
-    const mainDoc = shuffledVideos[0];
-    const mainVideoId = mainDoc.videoId;
-    const mainVideoFallbackTitle = mainDoc.title || "Video News";
+    const mainVideoId = shuffledVideos[0].videoId;
+    const mainVideoFallbackTitle = shuffledVideos[0].title || "Video News";
     mainVideo = await getYoutubeData(mainVideoId, mainVideoFallbackTitle);
     mainVideo.id = mainVideoId;
-    
-    // Set consistent date and views from database
-    mainVideo.views = `${(mainDoc.views || 0).toLocaleString()} हेराई`;
-    mainVideo.date = mainDoc.createdAt ? new Date(mainDoc.createdAt).toLocaleDateString("ne-NP") : "N/A";
 
     const sideVideoDocs = shuffledVideos.slice(1, 5);
     sideVideos = await Promise.all(
@@ -130,12 +125,7 @@ export default async function Home() {
           doc.videoId,
           doc.title || "Video News"
         );
-        return { 
-          id: doc.videoId, 
-          title: data.title,
-          views: `${(doc.views || 0).toLocaleString()} हेराई`,
-          date: doc.createdAt ? new Date(doc.createdAt).toLocaleDateString("ne-NP") : "N/A"
-        };
+        return { id: doc.videoId, ...data };
       })
     );
   }
@@ -400,9 +390,7 @@ export default async function Home() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       />
                       <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                        <div className="w-8 h-8 bg-black/50 rounded-full flex items-center justify-center border border-white/80 group-hover:scale-110 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-300">
-                          <Play size={12} className="text-white fill-white translate-x-0.5" />
-                        </div>
+                        <PlayCircle className="w-6 h-6 text-white opacity-80 group-hover:opacity-100" />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
