@@ -36,7 +36,7 @@ async function getYoutubeStats(videoId) {
 
     if (htmlRes.ok) {
       const html = await htmlRes.text();
-      const match = html.match(/var ytInitialData = (.*?);<\/script>/);
+      const match = html.match(/var ytInitialData = (.*);<\/script>/);
       if (match) {
         const data = JSON.parse(match[1]);
         const primaryInfo =

@@ -117,6 +117,12 @@ export default async function Home() {
     const mainVideoFallbackTitle = shuffledVideos[0].title || "Video News";
     mainVideo = await getYoutubeData(mainVideoId, mainVideoFallbackTitle);
     mainVideo.id = mainVideoId;
+    if (mainVideo.views === "N/A" || !mainVideo.views) {
+      mainVideo.views = `${(shuffledVideos[0].views || 0).toLocaleString()} हेराई`;
+    }
+    if (mainVideo.date === "N/A" || !mainVideo.date) {
+      mainVideo.date = shuffledVideos[0].createdAt ? new Date(shuffledVideos[0].createdAt).toLocaleDateString("ne-NP") : "N/A";
+    }
 
     const sideVideoDocs = shuffledVideos.slice(1, 5);
     sideVideos = await Promise.all(
@@ -125,7 +131,12 @@ export default async function Home() {
           doc.videoId,
           doc.title || "Video News"
         );
-        return { id: doc.videoId, ...data };
+        return { 
+          id: doc.videoId, 
+          title: data.title,
+          views: data.views !== "N/A" ? data.views : `${(doc.views || 0).toLocaleString()} हेराई`,
+          date: data.date !== "N/A" ? data.date : (doc.createdAt ? new Date(doc.createdAt).toLocaleDateString("ne-NP") : "N/A")
+        };
       })
     );
   }

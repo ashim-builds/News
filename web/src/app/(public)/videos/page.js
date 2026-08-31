@@ -19,6 +19,30 @@ async function getYoutubeData(id, fallbackTitle) {
       const oembedData = await oembedRes.json();
       title = oembedData.title;
     }
+
+    const htmlRes = await fetch(`https://www.youtube.com/watch?v=${id}`, {
+      next: { revalidate: 3600 },
+      headers: { "Accept-Language": "en-US,en;q=0.9" },
+    });
+    if (htmlRes.ok) {
+      const html = await htmlRes.text();
+      const match = html.match(/var ytInitialData = (.*);<\/script>/);
+      if (match) {
+        const data = JSON.parse(match[1]);
+        const videoDetails =
+          data.contents?.twoColumnWatchNextResults?.results?.results?.contents?.[0]?.videoPrimaryInfoRenderer;
+
+        if (videoDetails?.viewCount?.videoViewCountRenderer?.viewCount?.simpleText) {
+          views = videoDetails.viewCount.videoViewCountRenderer.viewCount.simpleText;
+        } else if (videoDetails?.viewCount?.videoViewCountRenderer?.shortViewCount?.simpleText) {
+          views = videoDetails.viewCount.videoViewCountRenderer.shortViewCount.simpleText;
+        }
+
+        if (videoDetails?.dateText?.simpleText) {
+          date = videoDetails.dateText.simpleText;
+        }
+      }
+    }
   } catch (err) {}
 
   return { title, views, date };
@@ -37,8 +61,8 @@ export default async function VideosPage() {
           return { 
             id: doc.videoId, 
             title: data.title,
-            views: `${(doc.views || 0).toLocaleString()} हेराई`,
-            date: doc.createdAt ? new Date(doc.createdAt).toLocaleDateString("ne-NP") : "N/A"
+            views: data.views !== "N/A" ? data.views : `${(doc.views || 0).toLocaleString()} हेराई`,
+            date: data.date !== "N/A" ? data.date : (doc.createdAt ? new Date(doc.createdAt).toLocaleDateString("ne-NP") : "N/A")
           };
         }));
       }
