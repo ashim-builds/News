@@ -83,7 +83,12 @@ export default async function Home() {
       const data = await res.json();
       if (data.success && Array.isArray(data.articles)) {
         const nonVideoArticles = data.articles.filter((a) => a.category !== "भिडियो ग्यालरी");
-        articles = shuffleArray(nonVideoArticles);
+        
+        // Separate featured and regular articles to prioritize featured posts at the top
+        const featuredArticles = nonVideoArticles.filter((a) => a.isFeatured);
+        const regularArticles = nonVideoArticles.filter((a) => !a.isFeatured);
+        
+        articles = [...featuredArticles, ...regularArticles];
         videoDocs = data.articles.filter((a) => a.category === "भिडियो ग्यालरी" && a.videoId);
       }
     }
