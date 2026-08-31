@@ -25,7 +25,12 @@ app.disable("x-powered-by");
 
 app.use(helmet());
 
-const allowedOrigins = ["http://localhost:3000", "http://127.0.0.1:3000"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://www.smartsanchar.com",
+  "https://smartsanchar.com"
+];
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(process.env.FRONTEND_URL);
 }
@@ -33,7 +38,12 @@ if (process.env.FRONTEND_URL) {
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+      if (
+        !origin || 
+        allowedOrigins.includes(origin) || 
+        origin.endsWith(".vercel.app") || 
+        origin.endsWith("smartsanchar.com")
+      ) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
