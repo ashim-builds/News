@@ -29,10 +29,11 @@ export default function ProvinceNews() {
         const res = await fetch(`/api/articles?status=Published&province=${encodeURIComponent(activeProvinceObj.name)}`);
         const data = await res.json();
         if (data.success && Array.isArray(data.articles)) {
-          setDbNews(data.articles);
+          setDbNews(data.articles.filter((a) => a.category !== "भिडियो ग्यालरी"));
         } else {
           setDbNews([]);
         }
+
       } catch (err) {
         console.error("Error fetching province news:", err);
         setDbNews([]);

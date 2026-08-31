@@ -70,8 +70,9 @@ export default async function ProvincePage({ params }) {
     if (res.ok) {
       const data = await res.json();
       if (data.success && Array.isArray(data.articles)) {
-        provinceNews = data.articles;
+        provinceNews = data.articles.filter((a) => a.category !== "भिडियो ग्यालरी");
       }
+
     }
   } catch (err) {
     console.warn("[PROVINCE PAGE API FETCH NOTICE]", err.message);
