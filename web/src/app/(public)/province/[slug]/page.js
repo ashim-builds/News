@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import ProvinceClient from "./ProvinceClient";
+import { API_BASE } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,7 @@ const PROVINCES = {
   sudurpashchim: "सुदूरपश्चिम",
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;

@@ -3,10 +3,10 @@ import { Clock, ChevronRight, PlayCircle, Eye } from "lucide-react";
 import Link from "next/link";
 import { getRelativeTimeNepali } from "@/lib/dateUtils";
 import AdBanner from "@/components/common/AdBanner";
+import { API_BASE } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 async function getYoutubeData(id, fallbackTitle) {
   let title = fallbackTitle;

@@ -1,4 +1,5 @@
 import ITClient from "./ITClient";
+import { API_BASE } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -7,7 +8,6 @@ export const metadata = {
   description: "प्रविधि, ग्याजेट, स्टार्टअप र डिजिटल नेपालका समाचारहरू।",
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default async function ITPage() {
   let newsList = [];

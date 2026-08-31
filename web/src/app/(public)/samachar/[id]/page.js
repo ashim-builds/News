@@ -11,9 +11,10 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { getRelativeTimeNepali } from "@/lib/dateUtils";
+import { API_BASE } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;

@@ -1,13 +1,14 @@
+import { API_BASE } from "@/lib/api";
 import ApradhClient from "./ApradhClient";
 
 export const dynamic = "force-dynamic";
+
 
 export const metadata = {
   title: "अपराध | स्मार्टसञ्चार",
   description: "अपराध, सुरक्षा, प्रहरी अनुसन्धान तथा न्यायिक गतिविधि सम्बन्धी ताजा समाचार।",
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default async function ApradhPage() {
   let crimeNews = [];

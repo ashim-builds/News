@@ -1,4 +1,5 @@
 import SamajClient from "./SamajClient";
+import { API_BASE } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -7,7 +8,6 @@ export const metadata = {
   description: "समाज, संस्कृति, स्वास्थ्य र स्थानीय गतिविधि सम्बन्धी समाचार।",
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default async function SamajPage() {
   let newsList = [];
