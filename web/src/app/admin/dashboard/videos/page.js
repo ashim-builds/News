@@ -27,6 +27,7 @@ import { authFetch } from "@/lib/auth";
 const CATEGORY_OPTIONS = [
   "समाचार",
   "मुख्य समाचार",
+  "खेलकुद",
   "प्रदेश पाना",
   "अर्थ / कृषि",
   "अपराध गतिविधि",

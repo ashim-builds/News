@@ -22,6 +22,7 @@ import { getRelativeTimeNepali } from "@/lib/dateUtils";
 const categoryColors = {
   "मुख्य समाचार": "bg-red-600",
   "समाचार": "bg-blue-600",
+  "खेलकुद": "bg-emerald-600",
   "अर्थ / कृषि": "bg-emerald-600",
   "अपराध": "bg-rose-600",
   "अपराध गतिविधि": "bg-rose-600",

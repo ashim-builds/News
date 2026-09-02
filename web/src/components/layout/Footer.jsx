@@ -7,7 +7,8 @@ import { ChevronRight, ShieldCheck, Heart, User } from "lucide-react";
 const FOOTER_NAV = {
   "मुख्य विषयहरू": [
     { label: "ताजा समाचार", href: "/taja" },
-    { label: "राजनीति", href: "/samachar" },
+    { label: "समाचार / राजनीति", href: "/samachar" },
+    { label: "खेलकुद", href: "/khelkud" },
     { label: "अर्थतन्त्र", href: "/artha" },
     { label: "अपराध", href: "/apradh" },
     { label: "सूचना प्रविधि", href: "/it" },

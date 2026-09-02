@@ -1,5 +1,5 @@
 import ProvinceNews from "@/components/home/ProvinceNews";
-import { Clock, ChevronRight, PlayCircle, Eye } from "lucide-react";
+import { Clock, ChevronRight, PlayCircle, Eye, Trophy } from "lucide-react";
 import Link from "next/link";
 import { getRelativeTimeNepali } from "@/lib/dateUtils";
 import AdBanner from "@/components/common/AdBanner";
@@ -101,6 +101,17 @@ export default async function Home() {
   const secondaryPosts = articles.slice(1, 3);
   const additionalGridNews = articles.slice(3, 7);
   const mainNewsList = articles.slice(7, 20);
+
+  // Sports (खेलकुद) articles extraction
+  const sportsArticles = articles.filter(
+    (a) =>
+      a.category === "खेलकुद" ||
+      a.category?.toLowerCase() === "khelkud" ||
+      a.category?.toLowerCase() === "sports" ||
+      a.category?.includes("खेलकुद")
+  );
+  const mainSportsArticle = sportsArticles[0] || null;
+  const sideSportsArticles = sportsArticles.slice(1, 5);
 
   // Marquee breaking news string
   const breakingNewsText =
@@ -290,56 +301,179 @@ export default async function Home() {
         {/* Province News Section */}
         <ProvinceNews />
 
-        {/* Main News Grid Section */}
+        {/* Main News & Khelkud (Sports) Side-by-Side Section */}
         {mainNewsList.length > 0 && (
           <section className="mb-10 mt-8">
-            <div className="flex items-center justify-between border-b-2 border-red-600 mb-6 pb-2">
-              <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 flex items-center gap-2">
-                <div className="w-2 h-6 bg-red-600 rounded-xs"></div>
-                सबै समाचार
-              </h2>
-              <Link
-                href="/samachar"
-                className="text-xs sm:text-sm font-bold text-red-600 hover:text-red-700 flex items-center gap-1"
-              >
-                सबै हेर्नुहोस् <ChevronRight size={16} />
-              </Link>
-            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              {/* Left Side (8 Columns): Samachar (News Grid) */}
+              <div className="lg:col-span-8 flex flex-col">
+                <div className="flex items-center justify-between border-b-2 border-red-600 mb-6 pb-2">
+                  <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 flex items-center gap-2">
+                    <div className="w-2 h-6 bg-red-600 rounded-xs"></div>
+                    समाचार
+                  </h2>
+                  <Link
+                    href="/samachar"
+                    className="text-xs sm:text-sm font-bold text-red-600 hover:text-red-700 flex items-center gap-1 transition-colors"
+                  >
+                    सबै हेर्नुहोस् <ChevronRight size={16} />
+                  </Link>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {mainNewsList.map((news) => (
-                <Link
-                  key={news._id}
-                  href={`/samachar/${news._id}`}
-                  className="bg-white rounded-xl shadow-xs overflow-hidden group border border-gray-200 hover:shadow-md transition-shadow flex flex-col"
-                >
-                  <div className="relative aspect-video overflow-hidden bg-gray-100">
-                    {news.imageUrl ? (
-                      <img
-                        src={news.imageUrl}
-                        alt={news.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
-                        नो इमेज
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-1">
+                  {mainNewsList.slice(0, 8).map((news) => (
+                    <Link
+                      key={news._id}
+                      href={`/samachar/${news._id}`}
+                      className="bg-white rounded-xl shadow-xs overflow-hidden group border border-gray-200 hover:shadow-md transition-shadow flex flex-col"
+                    >
+                      <div className="relative aspect-video overflow-hidden bg-gray-100">
+                        {news.imageUrl ? (
+                          <img
+                            src={news.imageUrl}
+                            alt={news.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
+                            नो इमेज
+                          </div>
+                        )}
+                        <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-0.5 text-[10px] font-bold rounded">
+                          {news.category || "समाचार"}
+                        </div>
+                      </div>
+                      <div className="p-4 flex flex-col flex-1">
+                        <h3 className="font-bold text-gray-900 group-hover:text-red-600 line-clamp-2 mb-2 text-sm leading-snug flex-1">
+                          {news.title}
+                        </h3>
+                        <div className="flex items-center text-[11px] text-gray-400 gap-1 mt-auto pt-2 border-t border-gray-100 font-medium">
+                          <Clock size={12} className="text-red-500" />
+                          {getRelativeTimeNepali(news.createdAt)}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Side (4 Columns): Khelkud (Sports Section beside Samachar) */}
+              <div className="lg:col-span-4 flex flex-col">
+                <div className="flex items-center justify-between border-b-2 border-emerald-600 mb-6 pb-2">
+                  <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 flex items-center gap-2">
+                    <div className="w-2 h-6 bg-emerald-600 rounded-xs"></div>
+                    <Trophy className="w-5 h-5 text-emerald-600" />
+                    खेलकुद
+                  </h2>
+                  <Link
+                    href="/khelkud"
+                    className="text-xs sm:text-sm font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors"
+                  >
+                    सबै खेलकुद <ChevronRight size={16} />
+                  </Link>
+                </div>
+
+                {mainSportsArticle ? (
+                  <div className="flex flex-col gap-4">
+                    {/* Featured Sports Highlight Card */}
+                    <Link
+                      href={`/samachar/${mainSportsArticle._id}`}
+                      className="bg-white rounded-xl shadow-xs overflow-hidden group border border-emerald-200 hover:shadow-md transition-shadow flex flex-col"
+                    >
+                      <div className="relative aspect-16/10 overflow-hidden bg-gray-100">
+                        {mainSportsArticle.imageUrl ? (
+                          <img
+                            src={mainSportsArticle.imageUrl}
+                            alt={mainSportsArticle.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 text-xs bg-emerald-50">
+                            <Trophy className="w-8 h-8 text-emerald-400 mb-1" />
+                            <span>खेलकुद समाचार</span>
+                          </div>
+                        )}
+                        <div className="absolute top-2 left-2 bg-emerald-700 text-white px-2.5 py-0.5 text-[10px] font-extrabold rounded-full shadow-xs">
+                          {mainSportsArticle.category || "खेलकुद"}
+                        </div>
+                        <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1 font-medium">
+                          <Eye size={10} />
+                          {(mainSportsArticle.views || 0).toLocaleString()}
+                        </div>
+                      </div>
+                      <div className="p-4 flex flex-col">
+                        <h3 className="font-bold text-gray-900 group-hover:text-emerald-700 line-clamp-2 mb-2 text-sm sm:text-base leading-snug">
+                          {mainSportsArticle.title}
+                        </h3>
+                        {mainSportsArticle.summary && (
+                          <p className="text-gray-500 text-xs line-clamp-2 mb-2 leading-relaxed">
+                            {mainSportsArticle.summary}
+                          </p>
+                        )}
+                        <div className="flex items-center text-[11px] text-gray-400 gap-1 font-medium pt-2 border-t border-gray-100">
+                          <Clock size={12} className="text-emerald-600" />
+                          {getRelativeTimeNepali(mainSportsArticle.createdAt)}
+                        </div>
+                      </div>
+                    </Link>
+
+                    {/* Secondary Sports News List */}
+                    {sideSportsArticles.length > 0 && (
+                      <div className="flex flex-col gap-3">
+                        {sideSportsArticles.map((sport) => (
+                          <Link
+                            key={sport._id}
+                            href={`/samachar/${sport._id}`}
+                            className="bg-white rounded-xl p-3 shadow-xs hover:shadow-md border border-gray-200/80 hover:border-emerald-300 flex gap-3 transition-all group"
+                          >
+                            <div className="relative w-24 aspect-16/10 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                              {sport.imageUrl ? (
+                                <img
+                                  src={sport.imageUrl}
+                                  alt={sport.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-emerald-50 text-emerald-600">
+                                  <Trophy size={16} />
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex flex-col justify-between flex-1 py-0.5">
+                              <h4 className="text-xs font-bold text-gray-900 group-hover:text-emerald-700 line-clamp-2 leading-snug">
+                                {sport.title}
+                              </h4>
+                              <div className="flex items-center gap-1 text-[10px] text-gray-400 mt-1 font-medium">
+                                <Clock size={10} className="text-emerald-600" />
+                                {getRelativeTimeNepali(sport.createdAt)}
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
                       </div>
                     )}
-                    <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-0.5 text-[10px] font-bold rounded">
-                      {news.category || "समाचार"}
-                    </div>
                   </div>
-                  <div className="p-4 flex flex-col flex-1">
-                    <h3 className="font-bold text-gray-900 group-hover:text-red-600 line-clamp-2 mb-2 text-sm leading-snug flex-1">
-                      {news.title}
+                ) : (
+                  <div className="bg-white rounded-2xl border-2 border-dashed border-emerald-200/80 p-6 text-center flex flex-col items-center justify-center flex-1 min-h-[300px]">
+                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-3 text-emerald-600 shadow-2xs">
+                      <Trophy size={28} />
+                    </div>
+                    <h3 className="text-sm font-bold text-gray-800 mb-1">
+                      खेलकुद ताजा गतिविधि
                     </h3>
-                    <div className="flex items-center text-[11px] text-gray-400 gap-1 mt-auto pt-2 border-t border-gray-100 font-medium">
-                      <Clock size={12} className="text-red-500" />
-                      {getRelativeTimeNepali(news.createdAt)}
-                    </div>
+                    <p className="text-xs text-gray-500 max-w-xs mb-4">
+                      नेपाल र विश्व खेलकुदका सबै ताजा गतिविधि र नतिजाहरू खेलकुद पृष्ठमा हेर्नुहोस्।
+                    </p>
+                    <Link
+                      href="/khelkud"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition shadow-xs"
+                    >
+                      <Trophy size={13} />
+                      <span>खेलकुद समाचार हेर्नुहोस्</span>
+                    </Link>
                   </div>
-                </Link>
-              ))}
+                )}
+              </div>
             </div>
           </section>
         )}

@@ -26,6 +26,7 @@ import { authFetch } from "@/lib/auth";
 const CATEGORY_OPTIONS = [
   "समाचार",
   "मुख्य समाचार",
+  "खेलकुद",
   "प्रदेश पाना",
   "अर्थ / कृषि",
   "अपराध गतिविधि",
@@ -336,9 +337,25 @@ export default function AdminNewsPage() {
                       )}
                       <span className="truncate">{article.title}</span>
                     </td>
-                    <td className="py-3.5 px-4 font-semibold text-blue-700 whitespace-nowrap">
-                      {article.category}{" "}
-                      {article.province ? `(${article.province})` : ""}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold text-[11px] ${
+                          article.category === "खेलकुद"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : article.category === "मुख्य समाचार"
+                            ? "bg-red-50 text-red-700 border border-red-200"
+                            : article.category === "अर्थ / कृषि"
+                            ? "bg-amber-50 text-amber-700 border border-amber-200"
+                            : "bg-blue-50 text-blue-700 border border-blue-200"
+                        }`}
+                      >
+                        {article.category || "समाचार"}
+                      </span>
+                      {article.province && (
+                        <span className="ml-1.5 text-[11px] text-gray-500 font-medium">
+                          ({article.province})
+                        </span>
+                      )}
                     </td>
                     <td className="py-3.5 px-4 text-gray-500 whitespace-nowrap">
                       {article.createdAt
