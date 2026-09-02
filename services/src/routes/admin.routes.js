@@ -45,10 +45,21 @@ const loginHandler = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // Set cookie for browser and Next.js middleware
+    const isProduction = process.env.NODE_ENV === "production";
+
+    // Set secure HttpOnly cookie for browser and Next.js middleware (JWT inaccessible to client JS)
     res.cookie("smart_admin_token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+
+    // Set non-sensitive UI indicator cookie (contains NO tokens or credentials)
+    res.cookie("smart_admin_logged_in", "1", {
       httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
+      secure: isProduction,
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/",
@@ -87,7 +98,9 @@ router.get("/verify", requireAdminAuth, (req, res) => {
 
 // Admin Logout
 router.post("/logout", (req, res) => {
-  res.clearCookie("smart_admin_token", { path: "/" });
+  const isProduction = process.env.NODE_ENV === "production";
+  res.clearCookie("smart_admin_token", { path: "/", httpOnly: true, secure: isProduction, sameSite: "lax" });
+  res.clearCookie("smart_admin_logged_in", { path: "/", httpOnly: false, secure: isProduction, sameSite: "lax" });
   res.json({ success: true, message: "Logged out successfully" });
 });
 

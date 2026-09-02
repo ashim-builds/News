@@ -25,7 +25,7 @@ import {
   Clock,
 } from "lucide-react";
 import ImageDropzone from "@/components/common/ImageDropzone";
-import { authFetch } from "@/lib/auth";
+import { authFetch, fetchAdminProfile } from "@/lib/auth";
 
 const CATEGORY_OPTIONS = [
   "समाचार",
@@ -89,17 +89,19 @@ function AdminDashboardContent() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Fetch dynamic session
+  // Fetch verified admin session directly from server (HttpOnly cookie)
   useEffect(() => {
-    try {
-      const session = localStorage.getItem("smart_admin_session");
-      if (session) {
-        const parsed = JSON.parse(session);
-        if (parsed?.email) {
-          queueMicrotask(() => setAdminEmail(parsed.email));
+    async function loadAdminEmail() {
+      try {
+        const profile = await fetchAdminProfile();
+        if (profile?.email) {
+          setAdminEmail(profile.email);
         }
+      } catch (err) {
+        console.error("Error loading admin profile:", err);
       }
-    } catch {}
+    }
+    loadAdminEmail();
   }, []);
 
   // Fetch dynamic articles from MongoDB

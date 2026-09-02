@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Search, User, ShieldCheck, X } from "lucide-react";
 
-import { getAdminToken } from "@/lib/auth";
+import { isAdminLoggedIn as checkAdminAuth } from "@/lib/auth";
 
 export default function AdminNav({ onMenuClick }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,8 +14,7 @@ export default function AdminNav({ onMenuClick }) {
 
   useEffect(() => {
     const updateAuth = () => {
-      const token = getAdminToken();
-      setIsLoggedIn(!!token);
+      setIsLoggedIn(checkAdminAuth());
     };
 
     updateAuth();

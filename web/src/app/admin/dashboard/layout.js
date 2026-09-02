@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { ShieldCheck, Lock, Loader2 } from "lucide-react";
 import AdminNav from "@/components/layout/AdminNav";
 import AdminSidebar from "@/components/layout/AdminSidebar";
-import { getAdminToken, clearAdminSession, authFetch } from "@/lib/auth";
+import { isAdminLoggedIn, clearAdminSession, authFetch } from "@/lib/auth";
 
 export default function AdminDashboardLayout({ children }) {
   const router = useRouter();
@@ -17,9 +17,8 @@ export default function AdminDashboardLayout({ children }) {
     let isMounted = true;
 
     async function verifyAuth() {
-      const token = getAdminToken();
-
-      if (!token) {
+      // First quick check: if no login cookie at all, immediately redirect
+      if (!isAdminLoggedIn()) {
         if (isMounted) {
           setIsAuthorized(false);
           setIsChecking(false);
@@ -30,6 +29,7 @@ export default function AdminDashboardLayout({ children }) {
       }
 
       try {
+        // Authenticate directly with server using secure HttpOnly cookie
         const res = await authFetch("/api/admin/verify");
         const data = await res.json();
 

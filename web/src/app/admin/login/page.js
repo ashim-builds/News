@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import AdminNav from "@/components/layout/AdminNav";
 import Footer from "@/components/layout/Footer";
-import { getAdminToken, setAdminSession } from "@/lib/auth";
+import { isAdminLoggedIn, setAdminSession } from "@/lib/auth";
 
 function AdminLoginForm() {
   const router = useRouter();
@@ -32,8 +32,7 @@ function AdminLoginForm() {
 
   useEffect(() => {
     // Check if already logged in
-    const token = getAdminToken();
-    if (token) {
+    if (isAdminLoggedIn()) {
       const redirectUrl = searchParams.get("redirect") || "/admin/dashboard";
       window.location.href = redirectUrl;
       return;

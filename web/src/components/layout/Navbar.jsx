@@ -21,7 +21,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
-import { getAdminToken } from "@/lib/auth";
+import { isAdminLoggedIn as checkAdminAuth } from "@/lib/auth";
 
 const PROVINCES = [
   { id: "koshi", name: "कोशी प्रदेश" },
@@ -94,8 +94,7 @@ function NavbarContent() {
 
   useEffect(() => {
     const updateAuth = () => {
-      const token = getAdminToken();
-      setIsAdminLoggedIn(!!token);
+      setIsAdminLoggedIn(checkAdminAuth());
     };
 
     updateAuth();
