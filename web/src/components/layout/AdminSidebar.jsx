@@ -13,6 +13,8 @@ import {
   BookOpen
 } from "lucide-react";
 
+import { clearAdminSession } from "@/lib/auth";
+
 const SIDEBAR_NAV = [
   { id: "dashboard", label: "मुख्य नियन्त्रण (Dashboard)", href: "/admin/dashboard", icon: LayoutDashboard },
   { id: "overview", label: "समाचार व्यवस्थापन (Articles)", href: "/admin/dashboard/news", icon: Newspaper },
@@ -25,12 +27,14 @@ const SIDEBAR_NAV = [
 export default function AdminSidebar({ activeTab, onTabChange }) {
   const pathname = usePathname();
 
-  const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("smart_admin_session");
-      window.dispatchEvent(new Event("storage"));
-      window.location.href = "/admin/login";
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+    } catch (e) {
+      console.error("Logout API call failed:", e);
     }
+    clearAdminSession();
+    window.location.href = "/admin/login";
   };
 
   const isTabActive = (item) => {

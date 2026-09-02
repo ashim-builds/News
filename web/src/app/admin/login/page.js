@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ShieldAlert,
   Lock,
@@ -14,8 +15,11 @@ import {
 } from "lucide-react";
 import AdminNav from "@/components/layout/AdminNav";
 import Footer from "@/components/layout/Footer";
+import { getAdminToken, setAdminSession } from "@/lib/auth";
 
 function AdminLoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,23 +32,17 @@ function AdminLoginForm() {
 
   useEffect(() => {
     // Check if already logged in
-    try {
-      const session = localStorage.getItem("smart_admin_session");
-      if (session) {
-        const parsed = JSON.parse(session);
-        if (parsed?.loggedIn) {
-          window.location.href = "/admin/dashboard";
-          return;
-        }
-      }
-    } catch (e) {
-      console.error(e);
+    const token = getAdminToken();
+    if (token) {
+      const redirectUrl = searchParams.get("redirect") || "/admin/dashboard";
+      window.location.href = redirectUrl;
+      return;
     }
 
     queueMicrotask(() => {
       setFormData({ email: "", password: "" });
     });
-  }, []);
+  }, [searchParams]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,6 +69,7 @@ function AdminLoginForm() {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
@@ -80,21 +79,16 @@ function AdminLoginForm() {
       const data = await res.json();
       setIsLoading(false);
 
-      if (data.success) {
-        if (typeof window !== "undefined") {
-          localStorage.setItem(
-            "smart_admin_session",
-            JSON.stringify({ loggedIn: true, email: formData.email, loginTime: Date.now() })
-          );
-          window.dispatchEvent(new Event("storage"));
-        }
+      if (data.success && data.token) {
+        // Save token and session
+        setAdminSession(data.token, data.admin || { email: formData.email });
 
         setSuccessMessage("Authentication Successful! Redirecting to Admin Dashboard...");
+        
+        const redirectUrl = searchParams.get("redirect") || "/admin/dashboard";
         setTimeout(() => {
-          if (typeof window !== "undefined") {
-            window.location.href = "/admin/dashboard";
-          }
-        }, 600);
+          window.location.href = redirectUrl;
+        }, 500);
       } else {
         setErrorMessage(data.message || "Authentication failed. Please check credentials.");
       }

@@ -1,9 +1,10 @@
 import express from "express";
 import Ad from "../models/Ad.js";
+import { requireAdminAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// GET ads by position/status
+// GET ads by position/status (Public)
 router.get("/", async (req, res) => {
   try {
     const { position, status } = req.query;
@@ -27,8 +28,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST create Ad
-router.post("/", async (req, res) => {
+// POST create Ad (Admin Only)
+router.post("/", requireAdminAuth, async (req, res) => {
   try {
     const ad = await Ad.create(req.body);
     res.status(201).json({ success: true, ad });
@@ -38,7 +39,13 @@ router.post("/", async (req, res) => {
 });
 
 // PUT update ad or track click
-router.put("/:id", async (req, res) => {
+// If action === "click", public click counter increment is permitted. Otherwise, requireAdminAuth.
+router.put("/:id", (req, res, next) => {
+  if (req.body && req.body.action === "click") {
+    return next();
+  }
+  return requireAdminAuth(req, res, next);
+}, async (req, res) => {
   try {
     const { action } = req.body;
     if (action === "click") {
@@ -54,8 +61,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE ad
-router.delete("/:id", async (req, res) => {
+// DELETE ad (Admin Only)
+router.delete("/:id", requireAdminAuth, async (req, res) => {
   try {
     const ad = await Ad.findByIdAndDelete(req.params.id);
     if (!ad) return res.status(404).json({ success: false, error: "Ad not found" });

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Trash2, Edit2, UserCheck, UserX, Loader2, RefreshCw, Upload, Image as ImageIcon } from "lucide-react";
+import { authFetch } from "@/lib/auth";
 
 export default function AdminPartnersPage() {
   const [partners, setPartners] = useState([]);
@@ -87,7 +88,7 @@ export default function AdminPartnersPage() {
       const bodyData = new FormData();
       bodyData.append("file", file);
 
-      const res = await fetch("/api/upload", {
+      const res = await authFetch("/api/upload", {
         method: "POST",
         body: bodyData,
       });
@@ -114,7 +115,7 @@ export default function AdminPartnersPage() {
       const url = editingPartner ? `/api/partners/${editingPartner._id}` : "/api/partners";
       const method = editingPartner ? "PUT" : "POST";
 
-      const res = await fetch(url, {
+      const res = await authFetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -138,7 +139,7 @@ export default function AdminPartnersPage() {
     if (!confirm("के तपाईं यो साझेदार हटाउन चाहनुहुन्छ? (Delete partner?)")) return;
 
     try {
-      const res = await fetch(`/api/partners/${id}`, { method: "DELETE" });
+      const res = await authFetch(`/api/partners/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         fetchPartners();
@@ -153,7 +154,7 @@ export default function AdminPartnersPage() {
   const toggleStatus = async (partner) => {
     const newStatus = partner.status === "Active" ? "Inactive" : "Active";
     try {
-      const res = await fetch(`/api/partners/${partner._id}`, {
+      const res = await authFetch(`/api/partners/${partner._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),

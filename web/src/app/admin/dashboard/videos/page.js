@@ -22,6 +22,7 @@ import {
   Check,
 } from "lucide-react";
 import ImageDropzone from "@/components/common/ImageDropzone";
+import { authFetch } from "@/lib/auth";
 
 const CATEGORY_OPTIONS = [
   "समाचार",
@@ -149,7 +150,7 @@ export default function AdminVideosPage() {
     setErrorMessage("");
     try {
       const vId = videoPreview.id || videoPreview.videoId;
-      const res = await fetch("/api/articles", {
+      const res = await authFetch("/api/articles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -207,7 +208,7 @@ export default function AdminVideosPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`/api/articles/${editingArticleId}`, {
+      const res = await authFetch(`/api/articles/${editingArticleId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(articleForm),
@@ -234,7 +235,7 @@ export default function AdminVideosPage() {
     if (!window.confirm(`Are you sure you want to delete video "${title}"?`)) return;
 
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: "DELETE" });
+      const res = await authFetch(`/api/articles/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setSuccessMessage(`Video "${title}" deleted from MongoDB.`);

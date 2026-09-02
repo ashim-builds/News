@@ -21,6 +21,7 @@ import {
   Check,
 } from "lucide-react";
 import ImageDropzone from "@/components/common/ImageDropzone";
+import { authFetch } from "@/lib/auth";
 
 const CATEGORY_OPTIONS = [
   "समाचार",
@@ -148,7 +149,7 @@ export default function AdminNewsPage() {
         : "/api/articles";
       const method = editingArticleId ? "PUT" : "POST";
 
-      const res = await fetch(url, {
+      const res = await authFetch(url, {
         method: method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(articleForm),
@@ -179,7 +180,7 @@ export default function AdminNewsPage() {
     if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
 
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: "DELETE" });
+      const res = await authFetch(`/api/articles/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setSuccessMessage(`Article "${title}" deleted from MongoDB.`);

@@ -1,9 +1,10 @@
 import express from "express";
 import Article from "../models/Article.js";
+import { requireAdminAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// GET all published articles with optional category/province filter
+// GET all published articles with optional category/province filter (Public)
 router.get("/", async (req, res) => {
   try {
     const { category, province, status, isFeatured, videoId, limit } = req.query;
@@ -29,7 +30,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET single article by ID
+// GET single article by ID (Public)
 router.get("/:id", async (req, res) => {
   try {
     const article = await Article.findByIdAndUpdate(
@@ -44,8 +45,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST create article
-router.post("/", async (req, res) => {
+// POST create article (Admin Only)
+router.post("/", requireAdminAuth, async (req, res) => {
   try {
     const article = await Article.create(req.body);
     res.status(201).json({ success: true, article });
@@ -54,8 +55,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT update article
-router.put("/:id", async (req, res) => {
+// PUT update article (Admin Only)
+router.put("/:id", requireAdminAuth, async (req, res) => {
   try {
     const article = await Article.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!article) return res.status(404).json({ success: false, error: "Article not found" });
@@ -65,8 +66,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE article
-router.delete("/:id", async (req, res) => {
+// DELETE article (Admin Only)
+router.delete("/:id", requireAdminAuth, async (req, res) => {
   try {
     const article = await Article.findByIdAndDelete(req.params.id);
     if (!article) return res.status(404).json({ success: false, error: "Article not found" });

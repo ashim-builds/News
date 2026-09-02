@@ -5,21 +5,27 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Search, User, ShieldCheck, X } from "lucide-react";
 
+import { getAdminToken } from "@/lib/auth";
+
 export default function AdminNav({ onMenuClick }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    try {
-      const session = localStorage.getItem("smart_admin_session");
-      if (session) {
-        const parsed = JSON.parse(session);
-        queueMicrotask(() => setIsLoggedIn(!!parsed?.loggedIn));
-      }
-    } catch {
-      queueMicrotask(() => setIsLoggedIn(false));
-    }
+    const updateAuth = () => {
+      const token = getAdminToken();
+      setIsLoggedIn(!!token);
+    };
+
+    updateAuth();
+    window.addEventListener("storage", updateAuth);
+    window.addEventListener("admin-auth-changed", updateAuth);
+
+    return () => {
+      window.removeEventListener("storage", updateAuth);
+      window.removeEventListener("admin-auth-changed", updateAuth);
+    };
   }, []);
 
   const handleSearchSubmit = (e) => {

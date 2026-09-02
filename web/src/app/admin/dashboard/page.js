@@ -25,6 +25,7 @@ import {
   Clock,
 } from "lucide-react";
 import ImageDropzone from "@/components/common/ImageDropzone";
+import { authFetch } from "@/lib/auth";
 
 const CATEGORY_OPTIONS = [
   "समाचार",
@@ -191,7 +192,7 @@ function AdminDashboardContent() {
         : "/api/articles";
       const method = editingArticleId ? "PUT" : "POST";
 
-      const res = await fetch(url, {
+      const res = await authFetch(url, {
         method: method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(articleForm),
@@ -217,7 +218,7 @@ function AdminDashboardContent() {
     if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
 
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: "DELETE" });
+      const res = await authFetch(`/api/articles/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setSuccessMessage(`Article "${title}" deleted from MongoDB.`);
@@ -253,7 +254,7 @@ function AdminDashboardContent() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/admin/change-password", {
+      const res = await authFetch("/api/admin/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

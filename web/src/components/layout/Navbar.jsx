@@ -20,6 +20,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
+import { getAdminToken } from "@/lib/auth";
 
 const PROVINCES = [
   { id: "koshi", name: "कोशी प्रदेश" },
@@ -90,19 +91,25 @@ function NavbarContent() {
   const { unreadCount } = useNotifications();
 
   useEffect(() => {
-    try {
-      const session = localStorage.getItem("smart_admin_session");
-      if (session) {
-        const parsed = JSON.parse(session);
-        queueMicrotask(() => setIsAdminLoggedIn(!!parsed?.loggedIn));
-      }
-    } catch {
-      queueMicrotask(() => setIsAdminLoggedIn(false));
-    }
+    const updateAuth = () => {
+      const token = getAdminToken();
+      setIsAdminLoggedIn(!!token);
+    };
+
+    updateAuth();
+    window.addEventListener("storage", updateAuth);
+    window.addEventListener("admin-auth-changed", updateAuth);
+
+    return () => {
+      window.removeEventListener("storage", updateAuth);
+      window.removeEventListener("admin-auth-changed", updateAuth);
+    };
   }, []);
 
   useEffect(() => {
-    setSearchQuery(searchParams?.get("q") || "");
+    queueMicrotask(() => {
+      setSearchQuery(searchParams?.get("q") || "");
+    });
   }, [searchParams]);
 
   const handleSearchSubmit = (e) => {

@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
+import { requireAdminAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
@@ -11,8 +12,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET || "pP6JXyTkMKt8mLVcdOLSvVg7Q2g",
 });
 
-// Single file upload via multipart/form-data (name="file") or JSON base64 { image }
-router.post("/", upload.single("file"), async (req, res) => {
+// Single file upload via multipart/form-data (name="file") or JSON base64 { image } (Admin Only)
+router.post("/", requireAdminAuth, upload.single("file"), async (req, res) => {
   try {
     let fileStr = null;
 

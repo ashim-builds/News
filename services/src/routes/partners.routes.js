@@ -1,8 +1,10 @@
 import express from "express";
 import Partner from "../models/Partner.js";
+import { requireAdminAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
+// GET all partners (Public)
 router.get("/", async (req, res) => {
   try {
     const partners = await Partner.find({}).sort({ order: 1, createdAt: -1 });
@@ -12,7 +14,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+// POST create partner (Admin Only)
+router.post("/", requireAdminAuth, async (req, res) => {
   try {
     const partner = await Partner.create(req.body);
     res.status(201).json({ success: true, data: partner });
@@ -21,7 +24,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+// PUT update partner (Admin Only)
+router.put("/:id", requireAdminAuth, async (req, res) => {
   try {
     const partner = await Partner.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!partner) return res.status(404).json({ success: false, error: "Partner not found" });
@@ -31,7 +35,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+// DELETE partner (Admin Only)
+router.delete("/:id", requireAdminAuth, async (req, res) => {
   try {
     const partner = await Partner.findByIdAndDelete(req.params.id);
     if (!partner) return res.status(404).json({ success: false, error: "Partner not found" });

@@ -13,6 +13,7 @@ import {
   XCircle,
   RefreshCw,
 } from "lucide-react";
+import { authFetch } from "@/lib/auth";
 
 export default function AdminAdsPage() {
   const [ads, setAds] = useState([]);
@@ -56,7 +57,7 @@ export default function AdminAdsPage() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", {
+      const res = await authFetch("/api/upload", {
         method: "POST",
         body: formData,
       });
@@ -79,7 +80,7 @@ export default function AdminAdsPage() {
     setMessage(null);
 
     try {
-      const res = await fetch("/api/ads", {
+      const res = await authFetch("/api/ads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -114,7 +115,7 @@ export default function AdminAdsPage() {
   const handleToggleStatus = async (ad) => {
     const newStatus = ad.status === "Active" ? "Disabled" : "Active";
     try {
-      const res = await fetch(`/api/ads/${ad._id}`, {
+      const res = await authFetch(`/api/ads/${ad._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -128,7 +129,7 @@ export default function AdminAdsPage() {
   const handleDelete = async (id) => {
     if (!confirm("के तपाईं यो विज्ञापन हटाउन निश्चित हुनुहुन्छ?")) return;
     try {
-      const res = await fetch(`/api/ads/${id}`, { method: "DELETE" });
+      const res = await authFetch(`/api/ads/${id}`, { method: "DELETE" });
       if (res.ok) fetchAds();
     } catch (err) {
       console.error("Delete ad error:", err);

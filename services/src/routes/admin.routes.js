@@ -1,10 +1,15 @@
 import express from "express";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import env from "../config/env.js";
 import Admin from "../models/Admin.js";
+import { requireAdminAuth } from "../middlewares/auth.middleware.js";
+
+const JWT_SECRET = process.env.JWT_SECRET || env.JWT_SECRET || "7313cc8651a398378f869faed4cb896c80e04ba4e4e6065e2c697385ab0d6fbc";
 
 const router = express.Router();
 
-// Direct Admin Login (No OTP / No SMTP)
+// Direct Admin Login
 const loginHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -24,60 +29,80 @@ const loginHandler = async (req, res) => {
       });
     }
 
+    if (!admin) {
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
+    }
+
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: "Invalid credentials" });
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
     }
+
+    // Generate JWT token (7 days validity)
+    const token = jwt.sign(
+      { id: admin._id, email: admin.email, role: "admin" },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Set cookie for browser and Next.js middleware
+    res.cookie("smart_admin_token", token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
 
     res.json({
       success: true,
       message: "Login successful",
-      email: admin.email,
+      token,
+      admin: {
+        email: admin.email,
+        role: "admin",
+      },
     });
   } catch (error) {
+    console.error("[ADMIN LOGIN ERROR]:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
 router.post("/login", loginHandler);
-// Legacy compatibility aliases
 router.post("/send-otp", loginHandler);
 router.post("/verify-otp", (req, res) => res.json({ success: true, message: "OTP step obsolete" }));
 
-// Change Password (from Dashboard settings)
-router.post("/change-password", async (req, res) => {
-  try {
-    const { email, currentPassword, newPassword } = req.body;
-    if (!email || !currentPassword || !newPassword) {
-      return res.status(400).json({ success: false, message: "All fields are required" });
-    }
-
-    const admin = await Admin.findOne({ email: email.toLowerCase() });
-    if (!admin) {
-      return res.status(404).json({ success: false, message: "Admin account not found" });
-    }
-
-    const isMatch = await bcrypt.compare(currentPassword, admin.password);
-    if (!isMatch) {
-      return res.status(400).json({ success: false, message: "Incorrect current password" });
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    admin.password = hashedPassword;
-    await admin.save();
-
-    res.json({ success: true, message: "Password updated successfully" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+// Verify Admin Session Token
+router.get("/verify", requireAdminAuth, (req, res) => {
+  res.json({
+    success: true,
+    valid: true,
+    admin: {
+      email: req.admin.email,
+      role: req.admin.role || "admin",
+    },
+  });
 });
 
-// Change Password (from Dashboard settings)
-router.post("/change-password", async (req, res) => {
+// Admin Logout
+router.post("/logout", (req, res) => {
+  res.clearCookie("smart_admin_token", { path: "/" });
+  res.json({ success: true, message: "Logged out successfully" });
+});
+
+// Change Password (from Dashboard settings) - Protected with requireAdminAuth
+router.post("/change-password", requireAdminAuth, async (req, res) => {
   try {
-    const { email, currentPassword, newPassword } = req.body;
-    if (!email || !currentPassword || !newPassword) {
+    const { currentPassword, newPassword } = req.body;
+    const email = req.admin?.email || req.body.email;
+
+    if (!currentPassword || !newPassword) {
       return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: "New password must be at least 6 characters" });
     }
 
     const admin = await Admin.findOne({ email: email.toLowerCase() });
@@ -101,5 +126,3 @@ router.post("/change-password", async (req, res) => {
 });
 
 export default router;
-
-
