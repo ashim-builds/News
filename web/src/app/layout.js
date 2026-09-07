@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Noto_Sans_Devanagari } from 'next/font/google';
 import SecurityProvider from "@/components/providers/SecurityProvider";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const noto = Noto_Sans_Devanagari({ subsets: ['devanagari'] })
 
@@ -64,6 +65,7 @@ export default function RootLayout({ children }) {
         <SecurityProvider>
           {children}
         </SecurityProvider>
+        <GoogleAnalytics gaId="G-79MX6NT2WM" />
       </body>
     </html>
   );
