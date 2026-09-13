@@ -563,93 +563,93 @@ export default function UnicodeConverterPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs text-black">
             {/* Consonants Table */}
-            <div className="border border-gray-200 rounded-xl overflow-hidden">
-              <div className="bg-gray-50 px-3 py-2 border-b border-gray-200 font-bold text-gray-800">
+            <div className="border border-gray-300 rounded-xl overflow-hidden bg-white shadow-2xs">
+              <div className="bg-gray-100 px-3.5 py-2.5 border-b border-gray-300 font-extrabold text-black text-xs uppercase tracking-wider">
                 व्यञ्जन वर्ण (Consonants)
               </div>
-              <div className="p-3 grid grid-cols-2 gap-2">
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">s</kbd> = क</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">v</kbd> = ख</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">u</kbd> = ग</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">#</kbd> = घ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">r</kbd> = च</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">%</kbd> = छ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">h</kbd> = ज</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">^</kbd> = ट</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">&</kbd> = ठ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">*</kbd> = ड</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">(</kbd> = ढ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">)</kbd> = ण</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">t</kbd> = त</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">y</kbd> = थ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">b</kbd> = द</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">w</kbd> = ध</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">g</kbd> = न</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">k</kbd> = प</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">m</kbd> = फ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">a</kbd> = ब</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">e</kbd> = भ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">d</kbd> = म</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">o</kbd> = य</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">/</kbd> = र</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">n</kbd> = ल</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">j</kbd> = व</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">z</kbd> = श</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">;</kbd> = स</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">x</kbd> = ह</div>
+              <div className="p-3.5 grid grid-cols-2 gap-2.5 text-black font-semibold">
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">s</kbd> <span className="text-black font-bold">= क</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">v</kbd> <span className="text-black font-bold">= ख</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">u</kbd> <span className="text-black font-bold">= ग</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">#</kbd> <span className="text-black font-bold">= घ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">r</kbd> <span className="text-black font-bold">= च</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">%</kbd> <span className="text-black font-bold">= छ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">h</kbd> <span className="text-black font-bold">= ज</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">^</kbd> <span className="text-black font-bold">= ट</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">&</kbd> <span className="text-black font-bold">= ठ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">*</kbd> <span className="text-black font-bold">= ड</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">(</kbd> <span className="text-black font-bold">= ढ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">)</kbd> <span className="text-black font-bold">= ण</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">t</kbd> <span className="text-black font-bold">= त</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">y</kbd> <span className="text-black font-bold">= थ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">b</kbd> <span className="text-black font-bold">= द</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">w</kbd> <span className="text-black font-bold">= ध</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">g</kbd> <span className="text-black font-bold">= न</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">k</kbd> <span className="text-black font-bold">= प</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">m</kbd> <span className="text-black font-bold">= फ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">a</kbd> <span className="text-black font-bold">= ब</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">e</kbd> <span className="text-black font-bold">= भ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">d</kbd> <span className="text-black font-bold">= म</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">o</kbd> <span className="text-black font-bold">= य</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">/</kbd> <span className="text-black font-bold">= र</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">n</kbd> <span className="text-black font-bold">= ल</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">j</kbd> <span className="text-black font-bold">= व</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">z</kbd> <span className="text-black font-bold">= श</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">;</kbd> <span className="text-black font-bold">= स</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">x</kbd> <span className="text-black font-bold">= ह</span></div>
               </div>
             </div>
 
             {/* Matras Table */}
-            <div className="border border-gray-200 rounded-xl overflow-hidden">
-              <div className="bg-gray-50 px-3 py-2 border-b border-gray-200 font-bold text-gray-800">
+            <div className="border border-gray-300 rounded-xl overflow-hidden bg-white shadow-2xs">
+              <div className="bg-gray-100 px-3.5 py-2.5 border-b border-gray-300 font-extrabold text-black text-xs uppercase tracking-wider">
                 मात्रा तथा स्वर (Vowels & Matras)
               </div>
-              <div className="p-3 grid grid-cols-2 gap-2">
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">f</kbd> = ा (आकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">l</kbd> = ि (ह्रस्व इकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">L</kbd> = ी (दीर्घ ईकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">'</kbd> = ु (ह्रस्व उकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">"</kbd> = ू (दीर्घ ऊकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">]</kbd> = े (एकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">&#125;</kbd> = ै (ऐकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">f]</kbd> = ो (ओकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">f&#125;</kbd> = ौ (औकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">+</kbd> = ं (शिरविन्दु)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">F</kbd> = ँ (चन्द्रविन्दु)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">c</kbd> = अ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">cf</kbd> = आ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">O</kbd> = इ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">O&#123;</kbd> = ई</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">p</kbd> = उ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">P</kbd> = ए</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">cf]</kbd> = ओ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">cf&#125;</kbd> = औ</div>
+              <div className="p-3.5 grid grid-cols-2 gap-2.5 text-black font-semibold">
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">f</kbd> <span className="text-black font-bold">= ा (आकार)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">l</kbd> <span className="text-black font-bold">= ि (ह्रस्व)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">L</kbd> <span className="text-black font-bold">= ी (दीर्घ)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">'</kbd> <span className="text-black font-bold">= ु (ह्रस्व)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">"</kbd> <span className="text-black font-bold">= ू (दीर्घ)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">]</kbd> <span className="text-black font-bold">= े (एकार)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">&#125;</kbd> <span className="text-black font-bold">= ै (ऐकार)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">f]</kbd> <span className="text-black font-bold">= ो (ओकार)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">f&#125;</kbd> <span className="text-black font-bold">= ौ (औकार)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">+</kbd> <span className="text-black font-bold">= ं (शिरविन्दु)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">F</kbd> <span className="text-black font-bold">= ँ (चन्द्रविन्दु)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">c</kbd> <span className="text-black font-bold">= अ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">cf</kbd> <span className="text-black font-bold">= आ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">O</kbd> <span className="text-black font-bold">= इ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">O&#123;</kbd> <span className="text-black font-bold">= ई</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">p</kbd> <span className="text-black font-bold">= उ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">P</kbd> <span className="text-black font-bold">= ए</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">cf]</kbd> <span className="text-black font-bold">= ओ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">cf&#125;</kbd> <span className="text-black font-bold">= औ</span></div>
               </div>
             </div>
 
             {/* Special & Conjuncts */}
-            <div className="border border-gray-200 rounded-xl overflow-hidden">
-              <div className="bg-gray-50 px-3 py-2 border-b border-gray-200 font-bold text-gray-800">
+            <div className="border border-gray-300 rounded-xl overflow-hidden bg-white shadow-2xs">
+              <div className="bg-gray-100 px-3.5 py-2.5 border-b border-gray-300 font-extrabold text-black text-xs uppercase tracking-wider">
                 संयुक्त तथा विशेष वर्ण (Conjuncts)
               </div>
-              <div className="p-3 grid grid-cols-2 gap-2">
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">q</kbd> = त्र</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">!</kbd> = ज्ञ</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">I</kbd> = क्ष</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">&gt;</kbd> = श्र</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">&#123;</kbd> = र् (रेफ)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">|</kbd> = ्र (रकार)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">qm</kbd> = क्र</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">Q</kbd> = त्त</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">$</kbd> = द्ध</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">@</kbd> = द्द</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">B</kbd> = द्य</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">.</kbd> = । (पूर्णविराम)</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">?</kbd> = रु</div>
-                <div><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">?n</kbd> = रू</div>
+              <div className="p-3.5 grid grid-cols-2 gap-2.5 text-black font-semibold">
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">q</kbd> <span className="text-black font-bold">= त्र</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">!</kbd> <span className="text-black font-bold">= ज्ञ</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">I</kbd> <span className="text-black font-bold">= क्ष</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">&gt;</kbd> <span className="text-black font-bold">= श्र</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">&#123;</kbd> <span className="text-black font-bold">= र् (रेफ)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">|</kbd> <span className="text-black font-bold">= ्र (रकार)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">qm</kbd> <span className="text-black font-bold">= क्र</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">Q</kbd> <span className="text-black font-bold">= त्त</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">$</kbd> <span className="text-black font-bold">= द्ध</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">@</kbd> <span className="text-black font-bold">= द्द</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">B</kbd> <span className="text-black font-bold">= द्य</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">.</kbd> <span className="text-black font-bold">= । (पूर्णविराम)</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">?</kbd> <span className="text-black font-bold">= रु</span></div>
+                <div className="flex items-center gap-1.5 text-black"><kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-black font-mono font-bold shadow-2xs">?n</kbd> <span className="text-black font-bold">= रू</span></div>
               </div>
             </div>
           </div>
