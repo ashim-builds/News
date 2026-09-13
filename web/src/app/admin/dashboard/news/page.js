@@ -19,6 +19,7 @@ import {
   Share2,
   Copy,
   Check,
+  ClipboardPaste,
 } from "lucide-react";
 import ImageDropzone from "@/components/common/ImageDropzone";
 import { authFetch } from "@/lib/auth";
@@ -129,6 +130,23 @@ export default function AdminNewsPage() {
     });
     setErrorMessage("");
     setIsModalOpen(true);
+  };
+
+  // Quick 1-tap paste from clipboard for mobile & desktop
+  const handlePasteToField = async (field) => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard?.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          setArticleForm((prev) => ({
+            ...prev,
+            [field]: prev[field] ? prev[field] + "\n" + text : text,
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn("Clipboard paste error:", err);
+    }
   };
 
   // Save Article (Create or Update) in MongoDB
@@ -448,10 +466,21 @@ export default function AdminNewsPage() {
               className="p-6 overflow-y-auto space-y-4 flex-1"
             >
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  समाचारको शीर्षक (Title){" "}
-                  <span className="text-red-600">*</span>
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    समाचारको शीर्षक (Title){" "}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handlePasteToField("title")}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-md transition-colors cursor-pointer"
+                    title="क्लिपबोर्डबाट पेस्ट गर्नुहोस्"
+                  >
+                    <ClipboardPaste size={13} />
+                    <span>पेस्ट (Paste)</span>
+                  </button>
+                </div>
                 <input
                   type="text"
                   value={articleForm.title}
@@ -523,9 +552,20 @@ export default function AdminNewsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  संक्षेप विवरण (Summary Excerpt)
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    संक्षेप विवरण (Summary Excerpt)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handlePasteToField("summary")}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-md transition-colors cursor-pointer"
+                    title="क्लिपबोर्डबाट पेस्ट गर्नुहोस्"
+                  >
+                    <ClipboardPaste size={13} />
+                    <span>पेस्ट (Paste)</span>
+                  </button>
+                </div>
                 <textarea
                   rows="2"
                   value={articleForm.summary}
@@ -538,9 +578,20 @@ export default function AdminNewsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  पूर्ण समाचार विवरण (Content)
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    पूर्ण समाचार विवरण (Content)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handlePasteToField("content")}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-md transition-colors cursor-pointer"
+                    title="क्लिपबोर्डबाट पेस्ट गर्नुहोस्"
+                  >
+                    <ClipboardPaste size={13} />
+                    <span>पेस्ट (Paste)</span>
+                  </button>
+                </div>
                 <textarea
                   rows="4"
                   value={articleForm.content}

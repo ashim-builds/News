@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { getRelativeTimeNepali } from "@/lib/dateUtils";
 import { API_BASE } from "@/lib/api";
+import ShareButtons from "@/components/common/ShareButtons";
 
 export const dynamic = "force-dynamic";
 
@@ -186,6 +187,12 @@ export default async function NewsDetailPage({ params }) {
               </div>
             </div>
 
+            {/* Quick Share & Copy Link Toolbar */}
+            <div className="bg-gray-50/80 rounded-xl px-4 py-2 border border-gray-100 flex items-center justify-between flex-wrap gap-2">
+              <span className="text-xs font-bold text-gray-600">समाचार साझा वा लिङ्क कपि:</span>
+              <ShareButtons articleTitle={article.title} articleId={id} />
+            </div>
+
             {/* Main Featured Image */}
             {article.imageUrl ? (
               <div className="w-full aspect-16/10 rounded-2xl overflow-hidden border border-gray-200 shadow-xs bg-gray-100">
@@ -220,8 +227,14 @@ export default async function NewsDetailPage({ params }) {
               )}
             </div>
 
+            {/* Bottom Share & Copy Link */}
+            <div className="pt-4 border-t border-gray-100 flex items-center justify-between flex-wrap gap-2">
+              <span className="text-xs font-bold text-gray-600">समाचार शेयर वा लिङ्क कपि गर्नुहोस्:</span>
+              <ShareButtons articleTitle={article.title} articleId={id} />
+            </div>
+
             {/* Footer Tag */}
-            <div className="pt-6 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-medium">
+            <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-medium">
               <span>प्रकाशित: {getRelativeTimeNepali(article.createdAt)} {article.createdAt ? `(${new Date(article.createdAt).toLocaleDateString("ne-NP")})` : ""}</span>
               <span className="text-red-600 font-bold">स्मार्टसञ्चार मिडिया नेटवर्क</span>
             </div>

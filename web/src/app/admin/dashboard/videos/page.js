@@ -20,6 +20,7 @@ import {
   Share2,
   Copy,
   Check,
+  ClipboardPaste,
 } from "lucide-react";
 import ImageDropzone from "@/components/common/ImageDropzone";
 import { authFetch } from "@/lib/auth";
@@ -486,10 +487,30 @@ export default function AdminVideosPage() {
             {/* Modal Body */}
             <div className="p-6 overflow-y-auto space-y-4 flex-1">
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  युट्युब लिङ्क वा आइडी (YouTube Link or ID){" "}
-                  <span className="text-red-600">*</span>
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    युट्युब लिङ्क वा आइडी (YouTube Link or ID){" "}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        if (typeof navigator !== "undefined" && navigator.clipboard?.readText) {
+                          const text = await navigator.clipboard.readText();
+                          if (text) setVideoInputUrl(text.trim());
+                        }
+                      } catch (err) {
+                        console.warn("Clipboard paste error:", err);
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-md transition-colors cursor-pointer"
+                    title="क्लिपबोर्डबाट पेस्ट गर्नुहोस्"
+                  >
+                    <ClipboardPaste size={13} />
+                    <span>पेस्ट (Paste)</span>
+                  </button>
+                </div>
                 <div className="flex gap-3">
                   <input
                     type="text"
@@ -625,9 +646,29 @@ export default function AdminVideosPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  युट्युब भिडियो आइडी (YouTube Video ID) <span className="text-red-600">*</span>
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    युट्युब भिडियो आइडी (YouTube Video ID) <span className="text-red-600">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        if (typeof navigator !== "undefined" && navigator.clipboard?.readText) {
+                          const text = await navigator.clipboard.readText();
+                          if (text) setArticleForm((prev) => ({ ...prev, videoId: text.trim() }));
+                        }
+                      } catch (err) {
+                        console.warn("Clipboard paste error:", err);
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-md transition-colors cursor-pointer"
+                    title="क्लिपबोर्डबाट पेस्ट गर्नुहोस्"
+                  >
+                    <ClipboardPaste size={13} />
+                    <span>पेस्ट (Paste)</span>
+                  </button>
+                </div>
                 <input
                   type="text"
                   value={articleForm.videoId}

@@ -11,6 +11,8 @@ import {
   ChevronRight,
   Sparkles,
   Newspaper,
+  Check,
+  Copy,
 } from "lucide-react";
 
 export default function NewsDetailModal({ article, isOpen, onClose, onSelectArticle }) {
@@ -68,9 +70,37 @@ export default function NewsDetailModal({ article, isOpen, onClose, onSelectArti
 
   if (!isOpen || !currentArticle) return null;
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (typeof window !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
+      const shareUrl = `${window.location.origin}/samachar/${currentArticle._id || currentArticle.id || ""}`;
+      // On mobile devices with native share support, prefer native share sheet
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: currentArticle.title || "स्मार्टसञ्चार समाचार",
+            url: shareUrl,
+          });
+          return;
+        } catch (err) {
+          // Fall back to copy link if user cancelled or share failed
+        }
+      }
+
+      // Copy link to clipboard
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(shareUrl);
+        } else {
+          const textArea = document.createElement("textarea");
+          textArea.value = shareUrl;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+        }
+      } catch (err) {
+        console.warn("Error copying to clipboard:", err);
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -108,11 +138,19 @@ export default function NewsDetailModal({ article, isOpen, onClose, onSelectArti
           <div className="flex items-center gap-2">
             <button
               onClick={handleShare}
-              className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors cursor-pointer text-xs font-bold flex items-center gap-1.5"
-              title="Share Link"
+              className={`px-3 py-1.5 rounded-full transition-all cursor-pointer text-xs font-bold flex items-center gap-1.5 border ${
+                copied
+                  ? "bg-green-50 text-green-700 border-green-200"
+                  : "bg-gray-50 text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-200"
+              }`}
+              title="Share or Copy Link"
             >
-              <Share2 size={16} />
-              <span className="hidden sm:inline">{copied ? "कपि भयो!" : "शेयर"}</span>
+              {copied ? (
+                <Check size={14} className="text-green-600" />
+              ) : (
+                <Share2 size={14} className="text-gray-600" />
+              )}
+              <span>{copied ? "कपि भयो!" : "शेयर"}</span>
             </button>
             <button
               onClick={onClose}
