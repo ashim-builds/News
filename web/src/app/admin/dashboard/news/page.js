@@ -483,7 +483,7 @@ export default function AdminNewsPage() {
                   title="नयाँ ट्याबमा युनिकोड कन्भर्टर खोल्नुहोस्"
                 >
                   <Languages size={13} />
-                  <span>प्रिती / युनिकोड कन्भर्टर खोल्नुहोस् ↗</span>
+                  <span>रोमन टु युनिकोड कन्भर्टर खोल्नुहोस् ↗</span>
                 </Link>
               </div>
               <div>

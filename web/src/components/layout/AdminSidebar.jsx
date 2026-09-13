@@ -19,7 +19,7 @@ import { clearAdminSession } from "@/lib/auth";
 const SIDEBAR_NAV = [
   { id: "dashboard", label: "मुख्य नियन्त्रण (Dashboard)", href: "/admin/dashboard", icon: LayoutDashboard },
   { id: "overview", label: "समाचार व्यवस्थापन (Articles)", href: "/admin/dashboard/news", icon: Newspaper },
-  { id: "converter", label: "युनिकोड कन्भर्टर (Unicode)", href: "/admin/dashboard/converter", icon: Languages },
+  { id: "converter", label: "युनिकोड कन्भर्टर (Roman to Nepali)", href: "/admin/dashboard/converter", icon: Languages },
   { id: "videos", label: "भिडियो ग्यालरी (Videos)", href: "/admin/dashboard/videos", icon: Video },
   { id: "ads", label: "विज्ञापन व्यवस्थापन (Ads)", href: "/admin/dashboard/ads", icon: Megaphone },
   { id: "partners", label: "साझेदार तथा टिम (Partners)", href: "/admin/dashboard/partners", icon: Users },
