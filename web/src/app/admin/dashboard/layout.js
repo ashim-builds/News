@@ -12,6 +12,12 @@ export default function AdminDashboardLayout({ children }) {
   const pathname = usePathname();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMobileSidebarOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     let isMounted = true;
@@ -97,14 +103,29 @@ export default function AdminDashboardLayout({ children }) {
   return (
     <div className="bg-gray-50 h-screen flex flex-col overflow-hidden font-sans">
       {/* Top Navbar */}
-      <AdminNav />
+      <AdminNav onMenuClick={() => setMobileSidebarOpen((prev) => !prev)} />
 
       {/* Main Layout Container with Sidebar and Content */}
-      <div className="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden">
-        {/* Sidebar Container */}
+      <div className="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden relative">
+        {/* Desktop Sidebar Container */}
         <div className="hidden md:block w-64 h-full overflow-y-auto shrink-0 bg-white border-r border-gray-200">
           <AdminSidebar />
         </div>
+
+        {/* Mobile Sidebar Drawer */}
+        {mobileSidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs md:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          >
+            <div
+              className="w-64 h-full bg-white shadow-2xl overflow-y-auto animate-in slide-in-from-left duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <AdminSidebar onTabChange={() => setMobileSidebarOpen(false)} />
+            </div>
+          </div>
+        )}
 
         {/* Main Content Area */}
         <main className="flex-1 h-full overflow-y-auto px-4 sm:px-8 py-6">

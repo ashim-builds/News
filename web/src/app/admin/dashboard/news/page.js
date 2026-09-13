@@ -20,6 +20,7 @@ import {
   Copy,
   Check,
   ClipboardPaste,
+  Languages,
 } from "lucide-react";
 import ImageDropzone from "@/components/common/ImageDropzone";
 import { authFetch } from "@/lib/auth";
@@ -239,6 +240,15 @@ export default function AdminNewsPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/admin/dashboard/converter"
+            className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-xs cursor-pointer"
+            title="प्रिती ⇄ युनिकोड रूपान्तरण"
+          >
+            <Languages size={14} className="text-red-600" />
+            <span>युनिकोड कन्भर्टर</span>
+          </Link>
+
           <button
             onClick={fetchArticlesFromDB}
             className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-xs cursor-pointer"
@@ -465,6 +475,17 @@ export default function AdminNewsPage() {
               onSubmit={handleSaveArticle}
               className="p-6 overflow-y-auto space-y-4 flex-1"
             >
+              <div className="flex items-center justify-end">
+                <Link
+                  href="/admin/dashboard/converter"
+                  target="_blank"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 hover:underline bg-red-50/70 px-2.5 py-1 rounded-lg border border-red-100"
+                  title="नयाँ ट्याबमा युनिकोड कन्भर्टर खोल्नुहोस्"
+                >
+                  <Languages size={13} />
+                  <span>प्रिती / युनिकोड कन्भर्टर खोल्नुहोस् ↗</span>
+                </Link>
+              </div>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
