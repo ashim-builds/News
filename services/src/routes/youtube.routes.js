@@ -1,4 +1,5 @@
 import express from "express";
+import { cacheMiddleware } from "../utils/cache.js";
 
 const router = express.Router();
 
@@ -59,7 +60,7 @@ async function getYoutubeStats(videoId) {
   return { title, views, date };
 }
 
-router.get("/", async (req, res) => {
+router.get("/", cacheMiddleware(300, "youtube"), async (req, res) => {
   try {
     const rawId = req.query.id || req.query.url;
     if (!rawId) {

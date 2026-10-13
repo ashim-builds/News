@@ -1,6 +1,7 @@
 import express from "express";
 import Article from "../models/Article.js";
 import { requireAdminAuth } from "../middlewares/auth.middleware.js";
+import { routeCache, cacheMiddleware } from "../utils/cache.js";
 
 const router = express.Router();
 
@@ -51,8 +52,8 @@ function sanitizeArticlePayload(body) {
   return sanitized;
 }
 
-// GET all published articles with optional category/province filter (Public)
-router.get("/", async (req, res) => {
+// GET all published articles with optional category/province filter (Public - 60s Cache)
+router.get("/", cacheMiddleware(60, "articles"), async (req, res) => {
   try {
     const { category, province, status, isFeatured, videoId, limit } = req.query;
     const filter = {};
@@ -95,22 +96,32 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET single article by ID (Public)
+// GET single article by ID (Public - Cached with background view increment)
 router.get("/:id", async (req, res) => {
   try {
-    const article = await Article.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { views: 1 } },
-      { new: true }
-    );
+    const cacheKey = `article_detail:${req.params.id}`;
+    const cachedArticle = routeCache.get(cacheKey);
+
+    // Asynchronously record views without blocking response or locking DB connection
+    Article.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } }).catch(() => {});
+
+    if (cachedArticle) {
+      res.setHeader("X-Cache", "HIT");
+      return res.json({ success: true, article: cachedArticle });
+    }
+
+    const article = await Article.findById(req.params.id).lean();
     if (!article) return res.status(404).json({ success: false, error: "Article not found" });
+
+    routeCache.set(cacheKey, article, 60);
+    res.setHeader("X-Cache", "MISS");
     res.json({ success: true, article });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// POST create article (Admin Only)
+// POST create article (Admin Only) - Automatically invalidates cache
 router.post("/", requireAdminAuth, async (req, res) => {
   try {
     const cleanData = sanitizeArticlePayload(req.body);
@@ -122,13 +133,14 @@ router.post("/", requireAdminAuth, async (req, res) => {
     }
 
     const article = await Article.create(cleanData);
+    routeCache.invalidatePrefix("article"); // Invalidate articles list & detail caches
     res.status(201).json({ success: true, article });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// PUT update article (Admin Only)
+// PUT update article (Admin Only) - Automatically invalidates cache
 router.put("/:id", requireAdminAuth, async (req, res) => {
   try {
     const cleanData = sanitizeArticlePayload(req.body);
@@ -137,17 +149,21 @@ router.put("/:id", requireAdminAuth, async (req, res) => {
       runValidators: true,
     });
     if (!article) return res.status(404).json({ success: false, error: "Article not found" });
+
+    routeCache.invalidatePrefix("article"); // Invalidate articles list & detail caches
     res.json({ success: true, article });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// DELETE article (Admin Only)
+// DELETE article (Admin Only) - Automatically invalidates cache
 router.delete("/:id", requireAdminAuth, async (req, res) => {
   try {
     const article = await Article.findByIdAndDelete(req.params.id);
     if (!article) return res.status(404).json({ success: false, error: "Article not found" });
+
+    routeCache.invalidatePrefix("article"); // Invalidate articles list & detail caches
     res.json({ success: true, message: "Article deleted" });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

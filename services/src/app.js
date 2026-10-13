@@ -58,14 +58,19 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(compression());
 
-// Ensure database connection is established
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-  } catch (error) {
-    console.error("Database connection failed on request:", error.message);
+import mongoose from "mongoose";
+
+// Fast connection check: only attempt reconnect if socket dropped
+app.use((req, res, next) => {
+  if (mongoose.connection.readyState === 1) {
+    return next();
   }
-  next();
+  connectDB()
+    .then(() => next())
+    .catch((error) => {
+      console.error("[Database] Reconnect failed on request:", error.message);
+      next();
+    });
 });
 
 
@@ -87,6 +92,17 @@ app.get("/", (req, res) => {
 // Health check endpoint (available at /health and /api/health)
 app.use("/health", healthRouter);
 app.use("/api/health", healthRouter);
+
+import path from "path";
+import fs from "fs";
+import { webpNegotiation } from "./middlewares/webp.middleware.js";
+
+// Optional local uploads static serving with WebP auto-negotiation
+const uploadsDir = path.join(process.cwd(), "uploads");
+if (fs.existsSync(uploadsDir)) {
+  app.use("/uploads", webpNegotiation(uploadsDir), express.static(uploadsDir, { maxAge: "30d" }));
+  app.use("/api/uploads", webpNegotiation(uploadsDir), express.static(uploadsDir, { maxAge: "30d" }));
+}
 
 // API Routes
 app.use("/api/articles", articlesRouter);

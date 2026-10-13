@@ -289,14 +289,14 @@ export default function AdminAdsPage() {
                 )}
               </div>
 
-              {/* LIVE SKELETON / PLACEMENT PREVIEW (Actual Proportions) */}
+              {/* LIVE SKELETON / PLACEMENT PREVIEW (Fixed Display Size, Crops if larger) */}
               <div
-                className={`w-full rounded-xl overflow-hidden border-2 transition-all relative flex items-center justify-center bg-gray-50/80 shadow-2xs ${
+                className={`w-full rounded-xl overflow-hidden border-2 transition-all relative flex items-center justify-center bg-gray-50/80 shadow-2xs shrink-0 ${
                   imageUrl ? "border-gray-300 bg-slate-900/5" : "border-dashed border-gray-300"
                 }`}
                 style={{
                   aspectRatio: currentPlacement.aspectRatio,
-                  minHeight: currentPlacement.minHeight,
+                  maxHeight: position === "sidebar" ? "220px" : "90px",
                 }}
               >
                 {isUploading ? (
@@ -308,12 +308,12 @@ export default function AdminAdsPage() {
                     </span>
                   </div>
                 ) : imageUrl ? (
-                  // Uploaded Image: object-contain ensures NO CROPPING at all!
-                  <div className="w-full h-full relative group flex items-center justify-center">
+                  // Uploaded Image: object-cover fills fixed place and crops excess if image is larger
+                  <div className="w-full h-full relative group flex items-center justify-center overflow-hidden">
                     <img
                       src={imageUrl}
                       alt="Ad Preview"
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                     />
                     {/* Hover Overlay with Action Buttons */}
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -329,7 +329,7 @@ export default function AdminAdsPage() {
                         className="px-3 py-1.5 bg-white text-gray-800 rounded-lg text-xs font-bold flex items-center gap-1 shadow-md hover:bg-gray-100 transition-transform hover:scale-105 cursor-pointer"
                       >
                         <Eye size={13} />
-                        <span>वास्तविक आकार</span>
+                        <span>वास्तविक फाइल हेर्नुहोस्</span>
                       </button>
                       <button
                         type="button"
@@ -340,9 +340,9 @@ export default function AdminAdsPage() {
                         <span>हटाउनुहोस्</span>
                       </button>
                     </div>
-                    {/* Full Size / No-Crop Badge */}
+                    {/* Fixed Size Badge */}
                     <span className="absolute bottom-1.5 right-2 bg-black/75 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-xs">
-                      पूर्ण आकार (No Crop) • {currentPlacement.size}
+                      निश्चित आकार (Fixed Slot • ठूलो भए क्रप हुन्छ)
                     </span>
                   </div>
                 ) : (
@@ -437,7 +437,7 @@ export default function AdminAdsPage() {
                       <img
                         src={ad.imageUrl}
                         alt={ad.title}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
                         <Eye size={14} className="text-white drop-shadow-sm" />

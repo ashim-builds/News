@@ -74,7 +74,7 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
     // Default placeholder state if no custom ad is active
     if (position === "header") {
       return (
-        <div className={`hidden md:flex bg-gray-100 items-center justify-center h-20 w-[450px] lg:w-[600px] text-gray-400 border border-gray-200 rounded-lg text-xs font-semibold ${className}`}>
+        <div className={`hidden md:flex bg-gray-100 items-center justify-center h-[75px] lg:h-[90px] max-w-[650px] lg:max-w-[728px] xl:max-w-[970px] w-full text-gray-400 border border-gray-200 rounded-xl text-xs font-semibold ml-auto shrink-0 ${className}`}>
           <span>विज्ञापन स्थान (९७० x ९०)</span>
         </div>
       );
@@ -82,7 +82,7 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
 
     if (position === "sidebar") {
       return (
-        <div className={`bg-gray-100 flex flex-col items-center justify-center h-60 w-full text-gray-400 border border-gray-200 rounded-xl text-xs font-semibold ${className}`}>
+        <div className={`bg-gray-100 flex flex-col items-center justify-center h-[250px] w-full max-w-[300px] mx-auto text-gray-400 border border-gray-200 rounded-xl text-xs font-semibold shrink-0 ${className}`}>
           <span>विज्ञापन स्थान</span>
           <span className="text-base font-bold text-gray-500 mt-1">३०० x २५०</span>
         </div>
@@ -90,25 +90,34 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
     }
 
     return (
-      <div className={`w-full bg-gray-100 h-24 flex items-center justify-center text-gray-400 border border-gray-200 rounded-xl text-xs font-semibold ${className}`}>
+      <div className={`w-full max-w-[970px] bg-gray-100 h-[90px] lg:h-[100px] flex items-center justify-center text-gray-400 border border-gray-200 rounded-xl text-xs font-semibold mx-auto my-4 shrink-0 ${className}`}>
         <span className="mr-2">विज्ञापन स्थान</span>
         <span className="text-base font-bold text-gray-500">९७० x ९०</span>
       </div>
     );
   }
 
+  // Fixed container sizes: Never increases size if image is larger; crops excess with object-cover
   const positionClasses = {
     header:
-      "hidden md:flex items-center justify-center max-w-[600px] lg:max-w-[728px] xl:max-w-[970px] w-auto h-20 aspect-[970/90] ml-auto",
-    sidebar: "w-full max-w-[300px] aspect-[300/250] mx-auto",
-    content: "w-full max-w-[970px] aspect-[970/90] mx-auto my-4",
+      "hidden md:block w-full max-w-[650px] lg:max-w-[728px] xl:max-w-[970px] h-[75px] lg:h-[90px] shrink-0 ml-auto",
+    sidebar:
+      "w-full max-w-[300px] h-[250px] mx-auto shrink-0",
+    content:
+      "w-full max-w-[970px] h-[90px] lg:h-[100px] mx-auto my-4 shrink-0",
   };
+
+  const fixedMaxHeight =
+    position === "sidebar" ? "250px" : position === "header" ? "90px" : "100px";
 
   return (
     <div
-      className={`overflow-hidden rounded-xl shadow-xs border border-gray-200 bg-white flex items-center justify-center ${
+      className={`overflow-hidden rounded-xl shadow-xs border border-gray-200 bg-white relative shrink-0 ${
         positionClasses[position] || ""
       } ${className}`}
+      style={{
+        maxHeight: fixedMaxHeight,
+      }}
     >
       {ad.linkUrl ? (
         <a
@@ -116,19 +125,19 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleClick}
-          className="block w-full h-full hover:opacity-95 transition-opacity flex items-center justify-center"
+          className="block w-full h-full hover:opacity-95 transition-opacity overflow-hidden"
         >
           <img
             src={ad.imageUrl}
             alt={ad.title || "Advertisement"}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
           />
         </a>
       ) : (
         <img
           src={ad.imageUrl}
           alt={ad.title || "Advertisement"}
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover"
         />
       )}
     </div>
