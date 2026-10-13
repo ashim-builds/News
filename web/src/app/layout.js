@@ -3,6 +3,7 @@ import "./globals.css";
 import { Noto_Sans_Devanagari } from 'next/font/google';
 import SecurityProvider from "@/components/providers/SecurityProvider";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import NextTopLoader from "nextjs-toploader";
 
 const noto = Noto_Sans_Devanagari({ subsets: ['devanagari'] })
 
@@ -55,6 +56,19 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <NextTopLoader
+          color="#2563eb"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #2563eb,0 0 5px #3b82f6"
+          zIndex={999999}
+          showAtBottom={false}
+        />
         {adSenseId && (
           <script
             async

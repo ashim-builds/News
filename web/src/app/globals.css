@@ -55,3 +55,41 @@ textarea,
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Instant micro-feedback on button clicks for tactile responsiveness */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease;
+}
+
+button:not(:disabled):active,
+[role="button"]:not([aria-disabled="true"]):active {
+  transform: scale(0.97);
+}
+
+/* Smooth link active opacity */
+a:active {
+  opacity: 0.85;
+}
+
+/* Shimmer gradient animation for skeleton loaders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(243, 244, 246, 1) 0%,
+    rgba(229, 231, 235, 1) 50%,
+    rgba(243, 244, 246, 1) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
