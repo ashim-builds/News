@@ -3,11 +3,12 @@
 import { useEffect, useRef } from "react";
 
 export default function GoogleAd({
-  adClient = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID || "ca-pub-XXXXXXXXXXXXXXXX",
+  adClient = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID || "ca-pub-8135129584076363",
   adSlot,
   adFormat = "auto",
-  fullWidthResponsive = "true",
+  fullWidthResponsive = "false",
   className = "",
+  style = {},
 }) {
   const adRef = useRef(null);
 
@@ -30,7 +31,7 @@ export default function GoogleAd({
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         }
       } catch (err) {
-        console.error("Google AdSense error:", err);
+        console.warn("Google AdSense push notice:", err.message);
       }
     };
 
@@ -53,7 +54,7 @@ export default function GoogleAd({
       <ins
         ref={adRef}
         className="adsbygoogle"
-        style={{ display: "block", width: "100%", height: "100%" }}
+        style={{ display: "block", ...style }}
         data-ad-client={adClient}
         data-ad-slot={adSlot}
         data-ad-format={adFormat}

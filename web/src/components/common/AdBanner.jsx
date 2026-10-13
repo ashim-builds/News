@@ -35,11 +35,19 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
         <GoogleAd
           adSlot={adSlot}
           adFormat="horizontal"
+          fullWidthResponsive="false"
           className={`hidden md:block w-full max-w-[728px] h-[90px] ml-auto ${className}`}
         />
       );
     }
-    return <GoogleAd adSlot={adSlot} className={`w-full h-[250px] ${className}`} />;
+    return (
+      <GoogleAd
+        adSlot={adSlot}
+        adFormat="rectangle"
+        fullWidthResponsive="false"
+        className={`w-full max-w-[300px] h-[250px] mx-auto ${className}`}
+      />
+    );
   }
 
   const handleClick = () => {
@@ -64,11 +72,19 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
           <GoogleAd
             adSlot={fallbackAdSlot}
             adFormat="horizontal"
+            fullWidthResponsive="false"
             className={`hidden md:block w-full max-w-[728px] h-[90px] ml-auto ${className}`}
           />
         );
       }
-      return <GoogleAd adSlot={fallbackAdSlot} className={`w-full h-[250px] ${className}`} />;
+      return (
+        <GoogleAd
+          adSlot={fallbackAdSlot}
+          adFormat="rectangle"
+          fullWidthResponsive="false"
+          className={`w-full max-w-[300px] h-[250px] mx-auto ${className}`}
+        />
+      );
     }
 
     // Default placeholder state if no custom ad is active

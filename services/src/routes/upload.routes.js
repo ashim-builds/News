@@ -28,6 +28,7 @@ router.post("/", requireAdminAuth, upload.single("file"), async (req, res) => {
       return res.status(400).json({ success: false, error: "No image file or image base64 provided" });
     }
 
+    try {
       // Upload to Cloudinary with WebP auto-negotiation and auto compression
       const uploadResponse = await cloudinary.uploader.upload(fileStr, {
         folder: "smartsanchar",
