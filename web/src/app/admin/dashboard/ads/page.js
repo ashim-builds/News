@@ -12,14 +12,47 @@ import {
   CheckCircle,
   XCircle,
   RefreshCw,
+  Image as ImageIcon,
+  X,
 } from "lucide-react";
 import { authFetch } from "@/lib/auth";
+
+const PLACEMENTS = {
+  header: {
+    label: "हेडर ब्यानर (Header Banner 970x90)",
+    shortLabel: "Header Banner",
+    size: "970 × 90 px",
+    aspectRatio: "970 / 90",
+    minHeight: "85px",
+    description: "वेबसाइटको मुख्य हेडरमा देखिने ठूलो ब्यानर",
+    badgeBg: "bg-blue-100 text-blue-800 border-blue-200",
+  },
+  sidebar: {
+    label: "साइडबार ब्यानर (Sidebar 300x250)",
+    shortLabel: "Sidebar Banner",
+    size: "300 × 250 px",
+    aspectRatio: "300 / 250",
+    minHeight: "180px",
+    description: "समाचार पृष्ठको दायाँपट्टी साइडबारमा देखिने ब्यानर",
+    badgeBg: "bg-purple-100 text-purple-800 border-purple-200",
+  },
+  content: {
+    label: "सामग्री ब्यानर (Content Banner 970x90)",
+    shortLabel: "Content Banner",
+    size: "970 × 90 px",
+    aspectRatio: "970 / 90",
+    minHeight: "85px",
+    description: "समाचार सामग्रीको बीचमा देखिने ठूलो ब्यानर",
+    badgeBg: "bg-amber-100 text-amber-800 border-amber-200",
+  },
+};
 
 export default function AdminAdsPage() {
   const [ads, setAds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [previewModalAd, setPreviewModalAd] = useState(null);
 
   // Form State
   const [title, setTitle] = useState("");
@@ -28,6 +61,8 @@ export default function AdminAdsPage() {
   const [position, setPosition] = useState("header");
   const [status, setStatus] = useState("Active");
   const [message, setMessage] = useState(null);
+
+  const currentPlacement = PLACEMENTS[position] || PLACEMENTS.header;
 
   useEffect(() => {
     fetchAds();
@@ -225,14 +260,20 @@ export default function AdminAdsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">
-                ब्यानर तस्वीर (Banner Image) *
-              </label>
-              <div className="flex items-center gap-3">
-                <label className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl text-xs font-bold text-gray-700 cursor-pointer transition-colors">
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-gray-700">
+                  ब्यानर तस्वीर (Banner Image) *
+                </label>
+                <span className="text-[11px] font-bold text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                  {currentPlacement.size}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3 mb-3">
+                <label className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl text-xs font-bold text-gray-700 cursor-pointer transition-colors shadow-2xs">
                   <Upload size={14} />
                   <span>
-                    {isUploading ? "अपलोड हुँदैछ..." : "तस्वीर रोज्नुहोस्"}
+                    {isUploading ? "अपलोड हुँदैछ..." : imageUrl ? "अर्को तस्वीर रोज्नुहोस्" : "तस्वीर रोज्नुहोस्"}
                   </span>
                   <input
                     type="file"
@@ -247,15 +288,82 @@ export default function AdminAdsPage() {
                   </span>
                 )}
               </div>
-              {imageUrl && (
-                <div className="mt-3 aspect-video max-h-32 rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
-                  <img
-                    src={imageUrl}
-                    alt="Ad Preview"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
+
+              {/* LIVE SKELETON / PLACEMENT PREVIEW (Actual Proportions) */}
+              <div
+                className={`w-full rounded-xl overflow-hidden border-2 transition-all relative flex items-center justify-center bg-gray-50/80 shadow-2xs ${
+                  imageUrl ? "border-gray-300 bg-slate-900/5" : "border-dashed border-gray-300"
+                }`}
+                style={{
+                  aspectRatio: currentPlacement.aspectRatio,
+                  minHeight: currentPlacement.minHeight,
+                }}
+              >
+                {isUploading ? (
+                  // Uploading Skeleton
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 animate-pulse text-gray-600 gap-2">
+                    <RefreshCw size={22} className="animate-spin text-red-600" />
+                    <span className="text-xs font-bold">
+                      तस्वीर अपलोड हुँदैछ... ({currentPlacement.size})
+                    </span>
+                  </div>
+                ) : imageUrl ? (
+                  // Uploaded Image: object-contain ensures NO CROPPING at all!
+                  <div className="w-full h-full relative group flex items-center justify-center">
+                    <img
+                      src={imageUrl}
+                      alt="Ad Preview"
+                      className="w-full h-full object-contain"
+                    />
+                    {/* Hover Overlay with Action Buttons */}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPreviewModalAd({
+                            imageUrl,
+                            title: title || "ब्यानर पूर्वावलोकन",
+                            position,
+                          })
+                        }
+                        className="px-3 py-1.5 bg-white text-gray-800 rounded-lg text-xs font-bold flex items-center gap-1 shadow-md hover:bg-gray-100 transition-transform hover:scale-105 cursor-pointer"
+                      >
+                        <Eye size={13} />
+                        <span>वास्तविक आकार</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setImageUrl("")}
+                        className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-md hover:bg-red-700 transition-transform hover:scale-105 cursor-pointer"
+                      >
+                        <X size={13} />
+                        <span>हटाउनुहोस्</span>
+                      </button>
+                    </div>
+                    {/* Full Size / No-Crop Badge */}
+                    <span className="absolute bottom-1.5 right-2 bg-black/75 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-xs">
+                      पूर्ण आकार (No Crop) • {currentPlacement.size}
+                    </span>
+                  </div>
+                ) : (
+                  // Position-based Skeleton Placeholder matching selected placement size
+                  <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-linear-to-b from-gray-50 to-gray-100/60 select-none">
+                    <div className="flex items-center gap-2 text-gray-600 font-bold text-xs mb-1">
+                      <ImageIcon size={18} className="text-gray-400" />
+                      <span>{currentPlacement.shortLabel} स्थान ढाँचा</span>
+                    </div>
+                    <div className="text-[11px] font-semibold text-gray-500">
+                      आकार:{" "}
+                      <span className="font-bold text-gray-800 font-mono">
+                        {currentPlacement.size}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-1">
+                      तस्वीर अपलोड गर्दा यो आकारमा ठ्याक्कै फिट हुनेछ (कुनै भाग काटिने छैन)
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="pt-2">
@@ -312,20 +420,42 @@ export default function AdminAdsPage() {
                   className="bg-gray-50/70 border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between"
                 >
                   <div className="flex gap-3 items-center">
-                    <div className="w-24 h-14 rounded-lg overflow-hidden shrink-0 bg-gray-200 border border-gray-300">
+                    {/* Adaptive Uncropped Thumbnail matching banner ratio */}
+                    <div
+                      onClick={() => setPreviewModalAd(ad)}
+                      className={`rounded-xl overflow-hidden shrink-0 bg-slate-900/5 border border-gray-300 p-0.5 flex items-center justify-center cursor-pointer hover:border-red-500 hover:shadow-xs transition-all group relative ${
+                        ad.position === "sidebar"
+                          ? "w-16 sm:w-20 h-14"
+                          : "w-32 sm:w-44 h-11"
+                      }`}
+                      style={{
+                        aspectRatio:
+                          ad.position === "sidebar" ? "300 / 250" : "970 / 90",
+                      }}
+                      title="वास्तविक साइज हेर्न क्लिक गर्नुहोस्"
+                    >
                       <img
                         src={ad.imageUrl}
                         alt={ad.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
+                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                        <Eye size={14} className="text-white drop-shadow-sm" />
+                      </div>
                     </div>
+
                     <div>
                       <h4 className="font-bold text-gray-900 text-sm">
                         {ad.title}
                       </h4>
                       <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-1 font-medium">
-                        <span className="bg-gray-200 px-2 py-0.5 rounded text-gray-800 font-bold uppercase">
-                          {ad.position}
+                        <span
+                          className={`px-2 py-0.5 rounded-md font-bold uppercase text-[10px] border ${
+                            PLACEMENTS[ad.position]?.badgeBg ||
+                            "bg-gray-200 text-gray-800 border-gray-300"
+                          }`}
+                        >
+                          {ad.position} ({PLACEMENTS[ad.position]?.size || ""})
                         </span>
                         <span>•</span>
                         <span className="flex items-center gap-1">
@@ -340,6 +470,14 @@ export default function AdminAdsPage() {
                   </div>
 
                   <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <button
+                      onClick={() => setPreviewModalAd(ad)}
+                      className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                      title="वास्तविक आकार हेर्नुहोस्"
+                    >
+                      <Eye size={16} />
+                    </button>
+
                     <button
                       onClick={() => handleToggleStatus(ad)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${
@@ -373,6 +511,61 @@ export default function AdminAdsPage() {
           )}
         </div>
       </div>
+
+      {/* FULL RESOLUTION / ACTUAL SIZE MODAL */}
+      {previewModalAd && (
+        <div
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+          onClick={() => setPreviewModalAd(null)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-4xl w-full p-5 space-y-4 shadow-2xl border border-gray-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div>
+                <h3 className="font-bold text-gray-900 text-base">
+                  {previewModalAd.title || "विज्ञापन पूर्वावलोकन"}
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  स्थान:{" "}
+                  <span className="font-bold text-gray-800 uppercase">
+                    {previewModalAd.position}
+                  </span>{" "}
+                  ({PLACEMENTS[previewModalAd.position]?.size || "ब्यानर"}) • वास्तविक आकार पूर्वावलोकन
+                </p>
+              </div>
+              <button
+                onClick={() => setPreviewModalAd(null)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Uncropped Full Size Display */}
+            <div className="bg-slate-900/5 rounded-xl border border-gray-200 p-3 overflow-auto max-h-[70vh] flex items-center justify-center">
+              <img
+                src={previewModalAd.imageUrl}
+                alt={previewModalAd.title || "Ad"}
+                className="max-w-full h-auto object-contain rounded"
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-xs text-gray-500 pt-1">
+              <span className="text-green-700 font-medium">
+                ✓ कुनै पनि भाग नकाटिएको पूर्ण विज्ञापन (Actual Size / No Crop)
+              </span>
+              <button
+                onClick={() => setPreviewModalAd(null)}
+                className="px-4 py-2 bg-gray-900 hover:bg-black text-white font-bold rounded-xl transition-colors cursor-pointer text-xs"
+              >
+                बन्द गर्नुहोस्
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -97,27 +97,38 @@ export default function AdBanner({ position = "header", adSlot, className = "" }
     );
   }
 
+  const positionClasses = {
+    header:
+      "hidden md:flex items-center justify-center max-w-[600px] lg:max-w-[728px] xl:max-w-[970px] w-auto h-20 aspect-[970/90] ml-auto",
+    sidebar: "w-full max-w-[300px] aspect-[300/250] mx-auto",
+    content: "w-full max-w-[970px] aspect-[970/90] mx-auto my-4",
+  };
+
   return (
-    <div className={`overflow-hidden rounded-xl shadow-xs border border-gray-200 ${className}`}>
+    <div
+      className={`overflow-hidden rounded-xl shadow-xs border border-gray-200 bg-white flex items-center justify-center ${
+        positionClasses[position] || ""
+      } ${className}`}
+    >
       {ad.linkUrl ? (
         <a
           href={ad.linkUrl}
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleClick}
-          className="block w-full h-full hover:opacity-95 transition-opacity"
+          className="block w-full h-full hover:opacity-95 transition-opacity flex items-center justify-center"
         >
           <img
             src={ad.imageUrl}
             alt={ad.title || "Advertisement"}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         </a>
       ) : (
         <img
           src={ad.imageUrl}
           alt={ad.title || "Advertisement"}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
       )}
     </div>
