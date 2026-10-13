@@ -41,9 +41,10 @@ export default function NewsDetailLoading() {
               <div className="h-4 w-16 bg-gray-200 rounded"></div>
             </div>
 
-            {/* Main Featured Image Skeleton */}
-            <div className="w-full aspect-16/9 bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center">
-              <div className="w-12 h-12 rounded-full border-2 border-gray-300 border-t-transparent animate-spin"></div>
+            {/* Main Featured Image Skeleton with Centered Spinner */}
+            <div className="w-full aspect-16/9 bg-gray-100 rounded-xl overflow-hidden flex flex-col items-center justify-center border border-gray-200/80">
+              <div className="w-10 h-10 rounded-full border-3 border-red-600 border-t-transparent animate-spin mb-2"></div>
+              <span className="text-xs sm:text-sm font-bold text-gray-500">समाचार विवरण लोड हुँदैछ...</span>
             </div>
 
             {/* Paragraph lines skeleton */}

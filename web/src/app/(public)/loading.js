@@ -11,7 +11,10 @@ export default function PublicLoading() {
         {/* Hero Section Skeleton */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs space-y-4">
-            <div className="aspect-16/9 w-full bg-gray-200 rounded-xl"></div>
+            <div className="aspect-16/9 w-full bg-gray-100 rounded-xl flex flex-col items-center justify-center border border-gray-200">
+              <div className="w-8 h-8 rounded-full border-3 border-red-600 border-t-transparent animate-spin mb-2"></div>
+              <span className="text-xs font-bold text-gray-500">ताजा सामग्री लोड हुँदैछ...</span>
+            </div>
             <div className="h-4 w-24 bg-red-200 rounded"></div>
             <div className="h-7 w-4/5 bg-gray-200 rounded"></div>
             <div className="h-4 w-2/3 bg-gray-200/70 rounded"></div>
