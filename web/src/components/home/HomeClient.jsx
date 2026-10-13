@@ -121,45 +121,6 @@ export default function HomeClient({ initialArticles = [], initialVideos = [] })
   return (
     <div className="bg-gray-50/60 min-h-screen pb-12">
       <main className="container mx-auto px-4 py-6 overflow-hidden">
-        {/* Breaking News Marquee & Shuffle Control */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white border border-gray-200/80 mb-6 rounded-xl shadow-xs overflow-hidden">
-          <div className="flex items-center justify-between bg-gradient-to-r from-red-700 to-red-600 text-white px-4 py-2.5 font-extrabold text-xs sm:text-sm tracking-wide shrink-0">
-            <span className="flex items-center gap-1.5">
-              <Radio size={16} className="animate-pulse" />
-              ब्रेकिङ समाचार
-            </span>
-          </div>
-
-          <div className="overflow-hidden flex-1 px-4 py-2 sm:py-0">
-            {marqueeArticles.length > 0 ? (
-              <div className="whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-4 text-xs sm:text-sm font-medium text-gray-800">
-                {marqueeArticles.map((art, idx) => (
-                  <Link
-                    key={art._id || idx}
-                    href={`/samachar/${art._id}`}
-                    className="hover:text-blue-600 transition-colors inline-flex items-center gap-2 mr-4"
-                  >
-                    <span>• {art.title}</span>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-gray-500 italic">ताजा समाचार लोड हुँदैछ...</p>
-            )}
-          </div>
-
-          {/* Randomize / Shuffle Button */}
-          <button
-            onClick={handleShuffle}
-            disabled={isShuffling}
-            className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-gray-900 hover:bg-blue-700 text-white text-xs font-extrabold transition-all cursor-pointer border-t sm:border-t-0 sm:border-l border-gray-100 shrink-0"
-            title="समाचार फेरबदल (Randomize News)"
-          >
-            <RefreshCw size={14} className={isShuffling ? "animate-spin" : ""} />
-            <span>ताजा फेरबदल</span>
-          </button>
-        </div>
-
         {/* Hero Featured Section */}
         <div className={`transition-opacity duration-300 ${isShuffling ? "opacity-40" : "opacity-100"}`}>
           {heroMain ? (

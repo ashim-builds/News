@@ -113,12 +113,6 @@ export default async function Home() {
   const mainSportsArticle = sportsArticles[0] || null;
   const sideSportsArticles = sportsArticles.slice(1, 5);
 
-  // Marquee breaking news string
-  const breakingNewsText =
-    articles.length > 0
-      ? shuffleArray(articles).slice(0, 6).map((a) => a.title).join(" • ")
-      : "स्मार्टसञ्चारमा स्वागत छ! ताजा र निष्पक्ष समाचारका लागि हामीलाई पछ्याउनुहोस्।";
-
   let mainVideo = null;
   let sideVideos = [];
 
@@ -155,18 +149,6 @@ export default async function Home() {
   return (
     <div className="bg-gray-50 min-h-screen">
       <main className="container mx-auto px-4 py-6 overflow-hidden">
-        {/* Breaking News Marquee */}
-        <div className="flex items-center bg-white border border-gray-200 mb-6 p-2 rounded shadow-xs">
-          <div className="bg-red-600 text-white px-3 py-1 font-bold rounded-xs whitespace-nowrap text-sm">
-            ताजा अपडेट
-          </div>
-          <div className="overflow-hidden ml-3 w-full">
-            <p className="marquee whitespace-nowrap text-gray-800 font-medium text-sm">
-              {breakingNewsText}
-            </p>
-          </div>
-        </div>
-
         {/* Top Featured Section */}
         {featuredPost && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10">
